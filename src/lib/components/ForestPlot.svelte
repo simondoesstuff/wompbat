@@ -20,8 +20,8 @@
 
 	const rowHeight = 32;
 	const marginTop = 4;
-	const marginBottom = 32;
-	const plotHeight = yDomain.length * rowHeight + marginBottom;
+	const marginBottom = 44;
+	const plotHeight = yDomain.length * rowHeight + marginTop + marginBottom;
 
 	let chartWidth = $state(0);
 
