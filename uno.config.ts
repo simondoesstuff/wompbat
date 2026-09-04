@@ -49,7 +49,7 @@ export default defineConfig({
       getCSS: () =>
         `
 				html {
-					--color-primary: #95d7ff;
+					--color-primary: #6a8290;
 					--color-secondary: #85ffd4;
 					--color-neutral: #fff9f2;
 					--color-success: #8bff86;
