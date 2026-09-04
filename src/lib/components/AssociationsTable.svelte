@@ -58,13 +58,24 @@
 		<span class="text-neutral-400 font-normal ml-1">{filteredRows.length}</span>
 	</h2>
 	<div class="flex items-center gap-3">
-		<label class="flex items-center gap-1.5 cursor-pointer select-none">
+		<label class="flex items-center gap-2 cursor-pointer select-none">
 			<input
 				type="checkbox"
 				checked={lowHeterogeneity}
 				onchange={(e) => onLowHeterogeneityChange(e.currentTarget.checked)}
-				class="accent-primary-700 w-3.5 h-3.5"
+				class="sr-only"
 			/>
+			<span
+				class="relative inline-flex shrink-0 w-7 h-4 rounded-full transition-colors duration-200"
+				class:bg-primary-700={lowHeterogeneity}
+				class:bg-neutral-400={!lowHeterogeneity}
+				aria-hidden="true"
+			>
+				<span
+					class="absolute top-0.5 left-0.5 w-3 h-3 rounded-full bg-white shadow-sm transition-transform duration-200"
+					class:translate-x-3={lowHeterogeneity}
+				></span>
+			</span>
 			<span class="text-xs text-neutral-600">Low Heterogeneity (I² &lt; 40%)</span>
 		</label>
 		<button
