@@ -6,6 +6,7 @@
 
 	let isPgs = $derived(page.url.pathname.startsWith('/pgs'));
 	let isPhecode = $derived(page.url.pathname.startsWith('/phecode'));
+	let isHome = $derived(page.url.pathname === '/');
 </script>
 
 <header class="flex items-center justify-between px-4 py-2 border-b border-neutral-200 bg-bg sticky top-0 z-10">
@@ -18,10 +19,12 @@
 		</span>
 	</div>
 
+	{#if !isHome}
 	<nav class="flex gap-1 mx-2">
 		<NavLink href="/pgs" label="Search by PGS" isActive={isPgs} />
 		<NavLink href="/phecode" label="Search by Phecode" isActive={isPhecode} />
 	</nav>
+	{/if}
 
 	<div class="text-xs text-neutral-400 shrink-0 hidden md:block">
 		{GENOME_BUILD} | {ENSEMBL_VERSION}
