@@ -61,6 +61,7 @@
 			e.preventDefault();
 			const item = highlightedIndex >= 0 ? suggestions[highlightedIndex] : suggestions[0];
 			if (item) select(item);
+			else if (value.trim()) select({ id: value.trim(), label: value.trim() });
 		} else if (e.key === 'Escape') {
 			isOpen = false;
 			highlightedIndex = -1;
