@@ -1,12 +1,15 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import TwoPanelLayout from '$lib/components/TwoPanelLayout.svelte';
-	import SearchInput from '$lib/components/SearchInput.svelte';
+	import SearchCombobox from '$lib/components/SearchCombobox.svelte';
 	import PhecodeInfoPanel from '$lib/components/PhecodeInfoPanel.svelte';
 	import PgsAssociationsTable from '$lib/components/PgsAssociationsTable.svelte';
 	import ForestPlot from '$lib/components/ForestPlot.svelte';
 	import CaseRatesChart from '$lib/components/CaseRatesChart.svelte';
 	import { searchByPhecode } from '$lib/api';
-	import type { PhecodeSearchResult, PgsRow } from '$lib/types';
+	import type { PhecodeSearchResult, PgsRow, AutocompleteItem } from '$lib/types';
 
 	let query = $state('');
 	let result = $state<PhecodeSearchResult | null>(null);
@@ -14,8 +17,20 @@
 	let selectedRow = $state<PgsRow | null>(null);
 	let lowHeterogeneity = $state(false);
 
+	$effect(() => {
+		const id = page.url.searchParams.get('id') ?? '';
+		if (id) {
+			query = id;
+			untrack(() => search(id));
+		}
+	});
+
 	async function search(q: string) {
-		if (!q.trim()) { result = null; selectedRow = null; return; }
+		if (!q.trim()) {
+			result = null;
+			selectedRow = null;
+			return;
+		}
 		loading = true;
 		selectedRow = null;
 		try {
@@ -24,15 +39,19 @@
 			loading = false;
 		}
 	}
+
+	function onCommit(item: AutocompleteItem) {
+		goto(`/phecode?id=${encodeURIComponent(item.id)}`, { noScroll: true });
+	}
+
+	function crossLinkPgs(pgsId: string) {
+		goto(`/pgs?id=${encodeURIComponent(pgsId)}`);
+	}
 </script>
 
 <TwoPanelLayout>
 	{#snippet left()}
-		<SearchInput
-			bind:value={query}
-			placeholder="e.g. 250.2 (Type 2 diabetes mellitus)"
-			onSearch={search}
-		/>
+		<SearchCombobox mode="phecode" bind:value={query} {onCommit} />
 
 		{#if loading}
 			<div class="animate-pulse space-y-3">
@@ -48,13 +67,14 @@
 				onSelect={(row) => (selectedRow = row)}
 				{lowHeterogeneity}
 				onLowHeterogeneityChange={(v) => (lowHeterogeneity = v)}
+				onCrossLink={crossLinkPgs}
 			/>
 		{:else}
 			<div class="flex flex-col items-center justify-center py-20 text-neutral-400 gap-2">
 				<span class="i-mdi-hospital-box text-4xl"></span>
 				<p class="text-sm">Enter a phecode to explore polygenic score associations</p>
 				<button
-					onclick={() => { query = '250.2'; search('250.2'); }}
+					onclick={() => onCommit({ id: '250.2', label: 'Type 2 diabetes mellitus' })}
 					class="text-xs text-primary-700 hover:underline"
 				>
 					Try 250.2 (Type 2 diabetes mellitus)

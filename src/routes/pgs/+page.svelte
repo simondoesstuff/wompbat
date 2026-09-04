@@ -1,12 +1,15 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/state';
 	import TwoPanelLayout from '$lib/components/TwoPanelLayout.svelte';
-	import SearchInput from '$lib/components/SearchInput.svelte';
+	import SearchCombobox from '$lib/components/SearchCombobox.svelte';
 	import PgsInfoPanel from '$lib/components/PgsInfoPanel.svelte';
 	import PhecodeAssociationsTable from '$lib/components/PhecodeAssociationsTable.svelte';
 	import ForestPlot from '$lib/components/ForestPlot.svelte';
 	import CaseRatesChart from '$lib/components/CaseRatesChart.svelte';
 	import { searchByPgs } from '$lib/api';
-	import type { PgsSearchResult, PhecodeRow, PgsUnit } from '$lib/types';
+	import type { PgsSearchResult, PhecodeRow, PgsUnit, AutocompleteItem } from '$lib/types';
 
 	let query = $state('');
 	let unit = $state<PgsUnit>('continuous');
@@ -15,8 +18,20 @@
 	let selectedRow = $state<PhecodeRow | null>(null);
 	let lowHeterogeneity = $state(false);
 
+	$effect(() => {
+		const id = page.url.searchParams.get('id') ?? '';
+		if (id) {
+			query = id;
+			untrack(() => search(id));
+		}
+	});
+
 	async function search(q: string) {
-		if (!q.trim()) { result = null; selectedRow = null; return; }
+		if (!q.trim()) {
+			result = null;
+			selectedRow = null;
+			return;
+		}
 		loading = true;
 		selectedRow = null;
 		try {
@@ -26,9 +41,17 @@
 		}
 	}
 
+	function onCommit(item: AutocompleteItem) {
+		goto(`/pgs?id=${encodeURIComponent(item.id)}`, { noScroll: true });
+	}
+
 	function setUnit(newUnit: PgsUnit) {
 		unit = newUnit;
 		if (query.trim()) search(query);
+	}
+
+	function crossLinkPhecode(phecodeId: string) {
+		goto(`/phecode?id=${encodeURIComponent(phecodeId)}`);
 	}
 </script>
 
@@ -37,11 +60,7 @@
 		<!-- Search row -->
 		<div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
 			<div class="flex-1 w-full">
-				<SearchInput
-					bind:value={query}
-					placeholder="e.g. PGS000018 (Coronary Artery Disease)"
-					onSearch={search}
-				/>
+				<SearchCombobox mode="pgs" bind:value={query} {onCommit} />
 			</div>
 
 			<div class="flex items-center gap-2 shrink-0">
@@ -85,13 +104,14 @@
 				onSelect={(row) => (selectedRow = row)}
 				{lowHeterogeneity}
 				onLowHeterogeneityChange={(v) => (lowHeterogeneity = v)}
+				onCrossLink={crossLinkPhecode}
 			/>
 		{:else}
 			<div class="flex flex-col items-center justify-center py-20 text-neutral-400 gap-2">
 				<span class="i-mdi-dna text-4xl"></span>
 				<p class="text-sm">Enter a PGS ID to explore associations</p>
 				<button
-					onclick={() => { query = 'PGS000018'; search('PGS000018'); }}
+					onclick={() => onCommit({ id: 'PGS000018', label: 'Coronary Artery Disease' })}
 					class="text-xs text-primary-700 hover:underline"
 				>
 					Try PGS000018 (Coronary Artery Disease)

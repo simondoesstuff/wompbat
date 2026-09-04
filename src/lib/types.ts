@@ -1,4 +1,9 @@
 export type Ancestry = 'EUR' | 'AMR' | 'AFR' | 'EAS' | 'SAS' | 'Meta';
+
+export interface AutocompleteItem {
+	id: string;
+	label: string;
+}
 export type PgsUnit = 'continuous' | 'thresholded';
 
 export interface AncestryEffect {

@@ -10,8 +10,9 @@
 		onSelect: (row: PgsRow) => void;
 		lowHeterogeneity: boolean;
 		onLowHeterogeneityChange: (v: boolean) => void;
+		onCrossLink: (pgsId: string) => void;
 	}
-	let { rows, selectedRow, onSelect, lowHeterogeneity, onLowHeterogeneityChange }: Props = $props();
+	let { rows, selectedRow, onSelect, lowHeterogeneity, onLowHeterogeneityChange, onCrossLink }: Props = $props();
 </script>
 
 <AssociationsTable
@@ -36,8 +37,14 @@
 	{/snippet}
 
 	{#snippet tableRow(row)}
-		<td class="px-3 py-2">
-			<div class="font-mono font-semibold text-primary-700">{row.pgsId}</div>
+		<td class="px-3 py-2" onclick={(e) => e.stopPropagation()}>
+			<button
+				class="font-mono font-semibold text-primary-700 hover:underline hover:text-primary-900 transition-colors text-left"
+				title="Search as this PGS"
+				onclick={() => onCrossLink(row.pgsId)}
+			>
+				{row.pgsId}
+			</button>
 			<div class="text-neutral-500 text-xs leading-tight">{row.study}</div>
 		</td>
 		<td class="px-3 py-2 text-right font-mono text-neutral-700">

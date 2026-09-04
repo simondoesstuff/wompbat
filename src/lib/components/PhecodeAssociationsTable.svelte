@@ -10,8 +10,9 @@
 		onSelect: (row: PhecodeRow) => void;
 		lowHeterogeneity: boolean;
 		onLowHeterogeneityChange: (v: boolean) => void;
+		onCrossLink: (phecodeId: string) => void;
 	}
-	let { rows, selectedRow, onSelect, lowHeterogeneity, onLowHeterogeneityChange }: Props = $props();
+	let { rows, selectedRow, onSelect, lowHeterogeneity, onLowHeterogeneityChange, onCrossLink }: Props = $props();
 </script>
 
 <AssociationsTable
@@ -37,7 +38,15 @@
 	{/snippet}
 
 	{#snippet tableRow(row)}
-		<td class="px-3 py-2 font-mono font-semibold text-primary-700">{row.phecodeId}</td>
+		<td class="px-3 py-2" onclick={(e) => e.stopPropagation()}>
+			<button
+				class="font-mono font-semibold text-primary-700 hover:underline hover:text-primary-900 transition-colors"
+				title="Search as this phecode"
+				onclick={() => onCrossLink(row.phecodeId)}
+			>
+				{row.phecodeId}
+			</button>
+		</td>
 		<td class="px-3 py-2 text-fg max-w-48">{row.phenotypeName}</td>
 		<td class="px-3 py-2 text-right font-mono text-neutral-700">
 			{formatOR(row.metaOR, row.ciLower, row.ciUpper)}

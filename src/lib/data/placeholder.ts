@@ -1,6 +1,7 @@
 import type {
 	AncestryEffect,
 	AncestryStats,
+	AutocompleteItem,
 	PgsSearchResult,
 	PhecodeSearchResult
 } from '../types';
@@ -295,6 +296,37 @@ export const pgsPlaceholder: PgsSearchResult = {
 		}
 	]
 };
+
+export const pgsAutocompleteData: AutocompleteItem[] = [
+	{ id: 'PGS000018', label: 'Coronary Artery Disease' },
+	{ id: 'PGS000054', label: 'Type 2 Diabetes Mellitus — Mahajan et al. 2018' },
+	{ id: 'PGS000036', label: 'Coronary Artery Disease — Khera et al. 2018' },
+	{ id: 'PGS000854', label: 'Type 2 Diabetes Mellitus — Vujkovic et al. 2020' },
+	{ id: 'PGS001002', label: 'Type 2 Diabetes Mellitus — Mars et al. 2020' },
+	{ id: 'PGS000129', label: 'Type 2 Diabetes Mellitus — Suzuki et al. 2019' },
+	{ id: 'PGS000711', label: 'Type 2 Diabetes Mellitus — Graham et al. 2021' },
+	{ id: 'PGS001285', label: 'Type 2 Diabetes Mellitus — Mars et al. 2021' },
+	{ id: 'PGS000492', label: 'Type 2 Diabetes Mellitus — Scott et al. 2021' },
+	{ id: 'PGS001558', label: 'Type 2 Diabetes Mellitus — Chan et al. 2022' },
+	{ id: 'PGS000398', label: 'Type 2 Diabetes Mellitus — Wessel et al. 2021' },
+	{ id: 'PGS000722', label: 'Type 2 Diabetes Mellitus — Ritchie et al. 2021' }
+];
+
+export const phecodeAutocompleteData: AutocompleteItem[] = [
+	{ id: '250.2', label: 'Type 2 diabetes mellitus' },
+	{ id: '411.4', label: 'Coronary atherosclerosis' },
+	{ id: '411.2', label: 'Myocardial infarction' },
+	{ id: '413.3', label: 'Angina pectoris' },
+	{ id: '411.1', label: 'Unstable angina' },
+	{ id: '411.8', label: 'Other acute ischemic heart disease' },
+	{ id: '412.8', label: 'Old myocardial infarction' },
+	{ id: '414.8', label: 'Chronic ischemic heart disease' },
+	{ id: '413.8', label: 'Ischemic heart disease, unspecified' },
+	{ id: '428.1', label: 'Congestive heart failure' },
+	{ id: '415.1', label: 'Peripheral vascular disease' },
+	{ id: '461.1', label: 'Essential hypertension' },
+	{ id: '420.1', label: 'Atrial fibrillation and flutter' }
+];
 
 export const phecodePlaceholder: PhecodeSearchResult = {
 	info: {
