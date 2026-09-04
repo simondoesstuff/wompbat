@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { Plot, RuleX, RuleY, Dot } from 'svelteplot';
-	import { ANCESTRY_COLOR_DOMAIN, ANCESTRY_COLOR_RANGE, ANCESTRY_COLORS, FOREST_BAND_DOMAIN } from '$lib/constants';
+	import { ANCESTRY_COLORS, FOREST_BAND_DOMAIN } from '$lib/constants';
 	import { formatOR } from '$lib/utils';
 	import type { AncestryEffect, Ancestry } from '$lib/types';
 
@@ -32,6 +32,10 @@
 		const pad = (hi - lo) * 0.15;
 		return [Math.min(lo - pad, 0.85), hi + pad];
 	});
+
+	// Attach literal hex color to each row so Observable Plot uses it directly
+	// (bypassing the color scale, which interpolates rather than maps categorically)
+	let effectsWithColor = $derived(effects.map((e) => ({ ...e, color: ANCESTRY_COLORS[e.ancestry] })));
 </script>
 
 <div>
@@ -71,22 +75,21 @@
 					marginBottom={marginBottom}
 					y={{ domain: yDomain, axis: false }}
 					x={{ label: 'Effect Size (Odds Ratio)', grid: true, domain: xDomain }}
-					color={{ domain: ANCESTRY_COLOR_DOMAIN, range: ANCESTRY_COLOR_RANGE }}
-				>
+					>
 					<RuleX data={[1]} stroke="#999" strokeDasharray="4,2" strokeWidth={1} />
 					<RuleY
-						data={effects}
+						data={effectsWithColor}
 						y="ancestry"
 						x1="ci_lower"
 						x2="ci_upper"
-						stroke="ancestry"
+						stroke="color"
 						strokeWidth={2.5}
 					/>
 					<Dot
-						data={effects}
+						data={effectsWithColor}
 						x="or"
 						y="ancestry"
-						fill="ancestry"
+						fill="color"
 						r={5}
 						stroke="white"
 						strokeWidth={1.5}
