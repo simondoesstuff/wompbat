@@ -18,4 +18,10 @@
 	:global(html, body) {
 		@apply bg-bg text-fg;
 	}
+	/* Hides residual svelteplot y-axis DOM nodes that remain even with y.axis=false */
+	:global(.chart-inner .axis-y-title),
+	:global(.chart-inner .axis-y),
+	:global(.chart-inner .is-left) {
+		display: none;
+	}
 </style>

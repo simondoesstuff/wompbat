@@ -101,17 +101,17 @@
 </div>
 
 {#if !showAll && remaining > 0}
-	<button
-		onclick={() => (showAll = true)}
-		class="mt-2 text-xs text-neutral-500 hover:text-primary-700 transition-colors w-full text-center py-1"
-	>
+	<button onclick={() => (showAll = true)} class="show-more-btn">
 		↓ See more {entityLabel} ({remaining} remaining)
 	</button>
 {:else if showAll && remaining > 0}
-	<button
-		onclick={() => (showAll = false)}
-		class="mt-2 text-xs text-neutral-500 hover:text-primary-700 transition-colors w-full text-center py-1"
-	>
+	<button onclick={() => (showAll = false)} class="show-more-btn">
 		↑ Show fewer
 	</button>
 {/if}
+
+<style lang="postcss">
+	.show-more-btn {
+		@apply mt-2 text-xs text-neutral-500 hover:text-primary-700 transition-colors w-full text-center py-1;
+	}
+</style>

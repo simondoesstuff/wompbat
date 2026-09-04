@@ -33,7 +33,7 @@
 </script>
 
 <div>
-	<span class="text-xs font-semibold uppercase tracking-widest text-neutral-500">{title}</span>
+	<span class="section-label">{title}</span>
 
 	{#if browser && stats.length > 0}
 		<div class="flex items-start gap-0 mt-1">
@@ -51,7 +51,7 @@
 			</div>
 
 			<!-- SveltePlot bar chart -->
-			<div class="flex-1 min-w-0 rates-inner" bind:clientWidth={chartWidth}>
+			<div class="flex-1 min-w-0 chart-inner" bind:clientWidth={chartWidth}>
 				{#if chartWidth > 16}
 				<Plot
 					height={plotHeight}
@@ -95,11 +95,8 @@
 	{/if}
 </div>
 
-<style>
-	/* Hides residual svelteplot y-axis DOM nodes that remain even with y.axis=false */
-	:global(.rates-inner .axis-y-title),
-	:global(.rates-inner .axis-y),
-	:global(.rates-inner .is-left) {
-		display: none;
+<style lang="postcss">
+	.section-label {
+		@apply text-xs font-semibold uppercase tracking-widest text-neutral-500;
 	}
 </style>

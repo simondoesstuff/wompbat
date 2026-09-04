@@ -36,7 +36,7 @@
 
 <div>
 	<div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-1 gap-0.5">
-		<span class="text-xs font-semibold uppercase tracking-widest text-neutral-500">{title}</span>
+		<span class="section-label">{title}</span>
 		{#if model}
 			<span class="text-xs text-neutral-400">MODEL {model}</span>
 		{/if}
@@ -61,7 +61,7 @@
 			</div>
 
 			<!-- SveltePlot chart (no y-axis, just CI bars + dots + reference line) -->
-			<div class="flex-1 min-w-0 forest-inner" bind:clientWidth={chartWidth}>
+			<div class="flex-1 min-w-0 chart-inner" bind:clientWidth={chartWidth}>
 				{#if chartWidth > 16}
 				<Plot
 					height={plotHeight}
@@ -117,11 +117,8 @@
 	{/if}
 </div>
 
-<style>
-	/* Hides residual svelteplot y-axis DOM nodes that remain even with y.axis=false */
-	:global(.forest-inner .axis-y-title),
-	:global(.forest-inner .axis-y),
-	:global(.forest-inner .is-left) {
-		display: none;
+<style lang="postcss">
+	.section-label {
+		@apply text-xs font-semibold uppercase tracking-widest text-neutral-500;
 	}
 </style>

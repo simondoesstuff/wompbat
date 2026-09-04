@@ -4,6 +4,8 @@
 	import { page } from '$app/state';
 	import TwoPanelLayout from '$lib/components/TwoPanelLayout.svelte';
 	import SearchCombobox from '$lib/components/SearchCombobox.svelte';
+	import SearchLoadingSkeleton from '$lib/components/SearchLoadingSkeleton.svelte';
+	import EmptyState from '$lib/components/EmptyState.svelte';
 	import PgsInfoPanel from '$lib/components/PgsInfoPanel.svelte';
 	import PhecodeAssociationsTable from '$lib/components/PhecodeAssociationsTable.svelte';
 	import ForestPlot from '$lib/components/ForestPlot.svelte';
@@ -55,6 +57,20 @@
 	}
 </script>
 
+{#snippet chartCard(row: PhecodeRow)}
+	<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4">
+		<ForestPlot
+			title="Stratified Association"
+			subtitle={row.phenotypeName}
+			model="Continuous LogOR"
+			effects={row.effects}
+		/>
+		<div class="border-t border-neutral-200 pt-4">
+			<CaseRatesChart title="Ancestry Cohorts & Case Rates" stats={row.ancestryStats} />
+		</div>
+	</div>
+{/snippet}
+
 <TwoPanelLayout>
 	{#snippet left()}
 		<!-- Search row -->
@@ -91,10 +107,7 @@
 		</div>
 
 		{#if loading}
-			<div class="animate-pulse space-y-3">
-				<div class="h-20 bg-neutral-100 rounded-lg"></div>
-				<div class="h-64 bg-neutral-100 rounded-lg"></div>
-			</div>
+			<SearchLoadingSkeleton />
 		{:else if result}
 			<PgsInfoPanel info={result.info} />
 
@@ -107,60 +120,33 @@
 				onCrossLink={crossLinkPhecode}
 			/>
 		{:else}
-			<div class="flex flex-col items-center justify-center py-20 text-neutral-400 gap-2">
-				<span class="i-mdi-dna text-4xl"></span>
-				<p class="text-sm">Enter a PGS ID to explore associations</p>
+			<EmptyState icon="i-mdi-dna text-4xl" message="Enter a PGS ID to explore associations" class="py-20">
 				<button
 					onclick={() => onCommit({ id: 'PGS000018', label: 'Coronary Artery Disease' })}
 					class="text-xs text-primary-700 hover:underline"
 				>
 					Try PGS000018 (Coronary Artery Disease)
 				</button>
-			</div>
+			</EmptyState>
 		{/if}
 
 		<!-- Mobile: show charts below table -->
 		{#if result && selectedRow}
 			<div class="lg:hidden pt-2 border-t border-neutral-200">
-				<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4">
-					<ForestPlot
-						title="Stratified Association"
-						subtitle={selectedRow.phenotypeName}
-						model="Continuous LogOR"
-						effects={selectedRow.effects}
-					/>
-					<div class="border-t border-neutral-200 pt-4">
-						<CaseRatesChart
-							title="Ancestry Cohorts & Case Rates"
-							stats={selectedRow.ancestryStats}
-						/>
-					</div>
-				</div>
+				{@render chartCard(selectedRow)}
 			</div>
 		{/if}
 	{/snippet}
 
 	{#snippet right()}
 		{#if result && selectedRow}
-			<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4">
-				<ForestPlot
-					title="Stratified Association"
-					subtitle={selectedRow.phenotypeName}
-					model="Continuous LogOR"
-					effects={selectedRow.effects}
-				/>
-				<div class="border-t border-neutral-200 pt-4">
-					<CaseRatesChart
-						title="Ancestry Cohorts & Case Rates"
-						stats={selectedRow.ancestryStats}
-					/>
-				</div>
-			</div>
+			{@render chartCard(selectedRow)}
 		{:else if result}
-			<div class="flex flex-col items-center justify-center h-full text-neutral-400 gap-2">
-				<span class="i-mdi-cursor-default-click text-3xl"></span>
-				<p class="text-sm text-center">Select a row to view ancestry-stratified associations</p>
-			</div>
+			<EmptyState
+				icon="i-mdi-cursor-default-click text-3xl"
+				message="Select a row to view ancestry-stratified associations"
+				class="h-full"
+			/>
 		{/if}
 	{/snippet}
 </TwoPanelLayout>

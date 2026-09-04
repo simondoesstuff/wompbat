@@ -4,6 +4,8 @@
 	import { page } from '$app/state';
 	import TwoPanelLayout from '$lib/components/TwoPanelLayout.svelte';
 	import SearchCombobox from '$lib/components/SearchCombobox.svelte';
+	import SearchLoadingSkeleton from '$lib/components/SearchLoadingSkeleton.svelte';
+	import EmptyState from '$lib/components/EmptyState.svelte';
 	import PhecodeInfoPanel from '$lib/components/PhecodeInfoPanel.svelte';
 	import PgsAssociationsTable from '$lib/components/PgsAssociationsTable.svelte';
 	import ForestPlot from '$lib/components/ForestPlot.svelte';
@@ -49,15 +51,23 @@
 	}
 </script>
 
+{#snippet forestCard(row: PgsRow)}
+	<div class="border-2 border-primary-200 rounded-lg p-3">
+		<ForestPlot
+			title="Multi-Ancestry Validation"
+			subtitle="{row.pgsId} — {row.study}"
+			model="Continuous LogOR"
+			effects={row.effects}
+		/>
+	</div>
+{/snippet}
+
 <TwoPanelLayout>
 	{#snippet left()}
 		<SearchCombobox mode="phecode" bind:value={query} {onCommit} />
 
 		{#if loading}
-			<div class="animate-pulse space-y-3">
-				<div class="h-20 bg-neutral-100 rounded-lg"></div>
-				<div class="h-64 bg-neutral-100 rounded-lg"></div>
-			</div>
+			<SearchLoadingSkeleton />
 		{:else if result}
 			<PhecodeInfoPanel info={result.info} />
 
@@ -70,16 +80,14 @@
 				onCrossLink={crossLinkPgs}
 			/>
 		{:else}
-			<div class="flex flex-col items-center justify-center py-20 text-neutral-400 gap-2">
-				<span class="i-mdi-hospital-box text-4xl"></span>
-				<p class="text-sm">Enter a phecode to explore polygenic score associations</p>
+			<EmptyState icon="i-mdi-hospital-box text-4xl" message="Enter a phecode to explore polygenic score associations" class="py-20">
 				<button
 					onclick={() => onCommit({ id: '250.2', label: 'Type 2 diabetes mellitus' })}
 					class="text-xs text-primary-700 hover:underline"
 				>
 					Try 250.2 (Type 2 diabetes mellitus)
 				</button>
-			</div>
+			</EmptyState>
 		{/if}
 
 		<!-- Mobile: charts below table -->
@@ -87,14 +95,7 @@
 			<div class="lg:hidden space-y-3 pt-2 border-t border-neutral-200">
 				<CaseRatesChart title="CCPM Biobank" stats={result.ancestryStats} />
 				{#if selectedRow}
-					<div class="border-2 border-primary-200 rounded-lg p-3">
-						<ForestPlot
-							title="Multi-Ancestry Validation"
-							subtitle="{selectedRow.pgsId} — {selectedRow.study}"
-							model="Continuous LogOR"
-							effects={selectedRow.effects}
-						/>
-					</div>
+					{@render forestCard(selectedRow)}
 				{/if}
 			</div>
 		{/if}
@@ -105,25 +106,20 @@
 			<CaseRatesChart title="CCPM Biobank" stats={result.ancestryStats} />
 
 			{#if selectedRow}
-				<div class="border-2 border-primary-200 rounded-lg p-3">
-					<ForestPlot
-						title="Multi-Ancestry Validation"
-						subtitle="{selectedRow.pgsId} — {selectedRow.study}"
-						model="Continuous LogOR"
-						effects={selectedRow.effects}
-					/>
-				</div>
+				{@render forestCard(selectedRow)}
 			{:else}
-				<div class="border-t border-neutral-100 pt-4 flex flex-col items-center justify-center py-10 text-neutral-400 gap-2">
-					<span class="i-mdi-cursor-default-click text-3xl"></span>
-					<p class="text-sm text-center">Select a model to view ancestry-stratified effects</p>
-				</div>
+				<EmptyState
+					icon="i-mdi-cursor-default-click text-3xl"
+					message="Select a model to view ancestry-stratified effects"
+					class="border-t border-neutral-100 pt-4 py-10"
+				/>
 			{/if}
 		{:else}
-			<div class="flex flex-col items-center justify-center h-full text-neutral-400 gap-2">
-				<span class="i-mdi-chart-box text-3xl"></span>
-				<p class="text-sm text-center">Search for a phecode to begin exploring</p>
-			</div>
+			<EmptyState
+				icon="i-mdi-chart-box text-3xl"
+				message="Search for a phecode to begin exploring"
+				class="h-full"
+			/>
 		{/if}
 	{/snippet}
 </TwoPanelLayout>

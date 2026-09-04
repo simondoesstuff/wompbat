@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import NavLink from './NavLink.svelte';
 	import { TOTAL_ASSOCIATIONS, GENOME_BUILD, ENSEMBL_VERSION } from '$lib/constants';
 	import { formatNumber } from '$lib/utils';
 
@@ -18,26 +19,8 @@
 	</div>
 
 	<nav class="flex gap-1 mx-2">
-		<a
-			href="/pgs"
-			class="px-3 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap"
-			class:bg-primary-700={isPgs}
-			class:text-bg={isPgs}
-			class:text-neutral-600={!isPgs}
-			class:hover:bg-neutral-100={!isPgs}
-		>
-			Search by PGS
-		</a>
-		<a
-			href="/phecode"
-			class="px-3 py-1 text-xs font-medium rounded transition-colors whitespace-nowrap"
-			class:bg-primary-700={isPhecode}
-			class:text-bg={isPhecode}
-			class:text-neutral-600={!isPhecode}
-			class:hover:bg-neutral-100={!isPhecode}
-		>
-			Search by Phecode
-		</a>
+		<NavLink href="/pgs" label="Search by PGS" isActive={isPgs} />
+		<NavLink href="/phecode" label="Search by Phecode" isActive={isPhecode} />
 	</nav>
 
 	<div class="text-xs text-neutral-400 shrink-0 hidden md:block">
