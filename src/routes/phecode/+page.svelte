@@ -64,15 +64,17 @@
 
 		<!-- Mobile: charts below table -->
 		{#if result}
-			<div class="lg:hidden space-y-6 pt-2 border-t border-neutral-200">
+			<div class="lg:hidden space-y-3 pt-2 border-t border-neutral-200">
 				<CaseRatesChart title="CCPM Biobank" stats={result.ancestryStats} />
 				{#if selectedRow}
-					<ForestPlot
-						title="Multi-Ancestry Validation"
-						subtitle="{selectedRow.pgsId} — {selectedRow.study}"
-						model="Continuous LogOR"
-						effects={selectedRow.effects}
-					/>
+					<div class="border-2 border-primary-200 rounded-lg p-3">
+						<ForestPlot
+							title="Multi-Ancestry Validation"
+							subtitle="{selectedRow.pgsId} — {selectedRow.study}"
+							model="Continuous LogOR"
+							effects={selectedRow.effects}
+						/>
+					</div>
 				{/if}
 			</div>
 		{/if}
@@ -82,21 +84,21 @@
 		{#if result}
 			<CaseRatesChart title="CCPM Biobank" stats={result.ancestryStats} />
 
-			<div class="border-t border-neutral-100 pt-4">
-				{#if selectedRow}
+			{#if selectedRow}
+				<div class="border-2 border-primary-200 rounded-lg p-3">
 					<ForestPlot
 						title="Multi-Ancestry Validation"
 						subtitle="{selectedRow.pgsId} — {selectedRow.study}"
 						model="Continuous LogOR"
 						effects={selectedRow.effects}
 					/>
-				{:else}
-					<div class="flex flex-col items-center justify-center py-10 text-neutral-400 gap-2">
-						<span class="i-mdi-cursor-default-click text-3xl"></span>
-						<p class="text-sm text-center">Select a model to view ancestry-stratified effects</p>
-					</div>
-				{/if}
-			</div>
+				</div>
+			{:else}
+				<div class="border-t border-neutral-100 pt-4 flex flex-col items-center justify-center py-10 text-neutral-400 gap-2">
+					<span class="i-mdi-cursor-default-click text-3xl"></span>
+					<p class="text-sm text-center">Select a model to view ancestry-stratified effects</p>
+				</div>
+			{/if}
 		{:else}
 			<div class="flex flex-col items-center justify-center h-full text-neutral-400 gap-2">
 				<span class="i-mdi-chart-box text-3xl"></span>

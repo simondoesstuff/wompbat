@@ -101,34 +101,40 @@
 
 		<!-- Mobile: show charts below table -->
 		{#if result && selectedRow}
-			<div class="lg:hidden space-y-6 pt-2 border-t border-neutral-200">
-				<ForestPlot
-					title="Stratified Association"
-					subtitle={selectedRow.phenotypeName}
-					model="Continuous LogOR"
-					effects={selectedRow.effects}
-				/>
-				<CaseRatesChart
-					title="Ancestry Cohorts & Case Rates"
-					stats={selectedRow.ancestryStats}
-				/>
+			<div class="lg:hidden pt-2 border-t border-neutral-200">
+				<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4">
+					<ForestPlot
+						title="Stratified Association"
+						subtitle={selectedRow.phenotypeName}
+						model="Continuous LogOR"
+						effects={selectedRow.effects}
+					/>
+					<div class="border-t border-neutral-200 pt-4">
+						<CaseRatesChart
+							title="Ancestry Cohorts & Case Rates"
+							stats={selectedRow.ancestryStats}
+						/>
+					</div>
+				</div>
 			</div>
 		{/if}
 	{/snippet}
 
 	{#snippet right()}
 		{#if result && selectedRow}
-			<ForestPlot
-				title="Stratified Association"
-				subtitle={selectedRow.phenotypeName}
-				model="Continuous LogOR"
-				effects={selectedRow.effects}
-			/>
-			<div class="border-t border-neutral-100 pt-4">
-				<CaseRatesChart
-					title="Ancestry Cohorts & Case Rates"
-					stats={selectedRow.ancestryStats}
+			<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4">
+				<ForestPlot
+					title="Stratified Association"
+					subtitle={selectedRow.phenotypeName}
+					model="Continuous LogOR"
+					effects={selectedRow.effects}
 				/>
+				<div class="border-t border-neutral-200 pt-4">
+					<CaseRatesChart
+						title="Ancestry Cohorts & Case Rates"
+						stats={selectedRow.ancestryStats}
+					/>
+				</div>
 			</div>
 		{:else if result}
 			<div class="flex flex-col items-center justify-center h-full text-neutral-400 gap-2">

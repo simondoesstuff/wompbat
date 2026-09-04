@@ -90,7 +90,7 @@
 				<tr
 					onclick={() => onSelect(row)}
 					class="border-t border-neutral-100 cursor-pointer transition-colors"
-					class:bg-primary-50={isSelected}
+					class:bg-primary-100={isSelected}
 					class:hover:bg-neutral-50={!isSelected}
 				>
 					{@render tableRow(row)}
