@@ -19,16 +19,17 @@
 	title="Top Associated Polygenic Scores"
 	{rows}
 	{onSelect}
-	isRowSelected={(row) => selectedRow?.pgsId === row.pgsId && selectedRow?.study === row.study}
+	isRowSelected={(row) => selectedRow?.pgsId === row.pgsId}
 	{lowHeterogeneity}
 	{onLowHeterogeneityChange}
 	exportFilename="pgs_associations.tsv"
 	exportHeaders={[...PGS_EXPORT_HEADERS]}
-	getExportRow={(r) => [r.pgsId, r.study, r.ccpmVariants, r.metaOR, r.ciLower, r.ciUpper, r.pValue, r.i2, r.auc]}
+	getExportRow={(r) => [r.pgsId, r.efoLabel, r.ccpmVariants, r.metaOR, r.ciLower, r.ciUpper, r.pValue, r.i2, r.auc]}
 	entityLabel="models"
 >
 	{#snippet columnHeaders()}
-		<th class="th-cell">PGS ID & Study</th>
+		<th class="th-cell">PGS ID</th>
+		<th class="th-cell">EFO Label</th>
 		<th class="th-right">CCPM Variants</th>
 		<th class="th-right">Meta OR (95% CI)</th>
 		<th class="th-right">P-Value</th>
@@ -45,8 +46,8 @@
 			>
 				{row.pgsId}
 			</button>
-			<div class="text-neutral-500 text-xs leading-tight">{row.study}</div>
 		</td>
+		<td class="px-3 py-2 text-fg text-sm max-w-40 capitalize">{row.efoLabel}</td>
 		<td class="td-num">{formatNumber(row.ccpmVariants)}</td>
 		<td class="td-num">{formatOR(row.metaOR, row.ciLower, row.ciUpper)}</td>
 		<td class="td-num">{formatPValue(row.pValue)}</td>

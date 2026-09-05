@@ -1,0 +1,10 @@
+rule decompress_megatable:
+	input:
+		"data/CCPM F3 Megatable Upload.tar.gz"
+	output:
+		directory("data/megatable")
+	shell:
+		"""
+		mkdir {output}
+		tar -xzf "{input}" -C "{output}" --strip-components=1
+		"""

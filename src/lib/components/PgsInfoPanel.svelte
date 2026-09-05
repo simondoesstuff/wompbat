@@ -20,7 +20,6 @@
 			>
 				{info.pgsId}
 			</a>
-			<span class="text-neutral-500">{info.modelName}</span>
 			<span class="uppercase tracking-wider text-neutral-400 text-xs">Core Phenotype</span>
 		</div>
 		<p class="text-base font-semibold text-fg leading-snug">{info.corePhenotype}</p>

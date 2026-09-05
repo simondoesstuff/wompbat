@@ -1,4 +1,4 @@
-export type Ancestry = 'EUR' | 'AMR' | 'AFR' | 'EAS' | 'SAS' | 'Meta';
+export type Ancestry = 'EUR' | 'AMR' | 'AFR' | 'EAS' | 'CSA' | 'MLE' | 'Meta';
 
 export interface AutocompleteItem {
 	id: string;
@@ -21,7 +21,6 @@ export interface AncestryStats {
 
 export interface PgsInfo {
 	pgsId: string;
-	modelName: string;
 	corePhenotype: string;
 	ccpmVariants: number;
 	catalogUrl: string;
@@ -30,8 +29,9 @@ export interface PgsInfo {
 export interface PhecodeInfo {
 	phecodeId: string;
 	phenotypeName: string;
-	cohort: string;
-	parentCategory: string;
+	domain: string;
+	totalCases: number;
+	totalSample: number;
 }
 
 export interface PhecodeRow {
@@ -50,7 +50,7 @@ export interface PhecodeRow {
 
 export interface PgsRow {
 	pgsId: string;
-	study: string;
+	efoLabel: string;
 	ccpmVariants: number;
 	metaOR: number;
 	ciLower: number;

@@ -55,7 +55,7 @@
 	<div class="border-2 border-primary-200 rounded-lg p-3">
 		<ForestPlot
 			title="Multi-Ancestry Validation"
-			subtitle="{row.pgsId} — {row.study}"
+			subtitle="{row.pgsId} — {row.efoLabel}"
 			model="Continuous LogOR"
 			effects={row.effects}
 		/>
