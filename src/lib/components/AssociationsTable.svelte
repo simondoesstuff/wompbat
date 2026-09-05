@@ -77,13 +77,18 @@
 			</span>
 			<span class="text-xs text-neutral-600">Low Heterogeneity (I² &lt; 40%)</span>
 		</label>
-		<button
-			onclick={exportTsv}
-			class="flex items-center gap-1 text-xs text-neutral-600 hover:text-fg border border-neutral-300 rounded px-2 py-1 hover:border-neutral-400 transition-colors"
-		>
-			<span class="i-mdi-download text-sm"></span>
-			Export TSV
-		</button>
+		<div class="flex flex-col items-center gap-0.5">
+			<button
+				onclick={exportTsv}
+				class="flex items-center gap-1 text-xs text-neutral-600 hover:text-fg border border-neutral-300 rounded px-2 py-1 hover:border-neutral-400 transition-colors"
+			>
+				<span class="i-mdi-download text-sm"></span>
+				Export TSV
+			</button>
+			{#if hasMore}
+				<span class="text-xs text-neutral-400 italic">loaded rows only</span>
+			{/if}
+		</div>
 	</div>
 </div>
 
