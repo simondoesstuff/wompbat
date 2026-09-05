@@ -8,3 +8,13 @@ rule decompress_megatable:
 		mkdir {output}
 		tar -xzf "{input}" -C "{output}" --strip-components=1
 		"""
+
+
+rule build_ccpm_db:
+	"""Extract Tier 1 columns from the megatable into a Turso/SQLite database."""
+	input:
+		"data/megatable/all_megatable_v2_w_header.txt.gz"
+	output:
+		"data/megatable.db"
+	script:
+		"scripts/build_db.py"
