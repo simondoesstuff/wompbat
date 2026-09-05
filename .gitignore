@@ -19,6 +19,7 @@ Thumbs.db
 !.env.example
 !.env.test
 /.direnv
+.snakemake
 
 # Vite
 vite.config.js.timestamp-*
