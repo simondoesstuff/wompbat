@@ -1,0 +1,10 @@
+name = "ccpm"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = ".svelte-kit/cloudflare"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ccpm-megatable"
+# Replace with real database_id after: tofu apply (or: wrangler d1 create ccpm-megatable)
+database_id = "00000000-0000-0000-0000-000000000000"
+preview_database_id = "DB"

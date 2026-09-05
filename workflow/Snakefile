@@ -11,10 +11,43 @@ rule decompress_megatable:
 
 
 rule build_ccpm_db:
-	"""Extract Tier 1 columns from the megatable into a Turso/SQLite database."""
+	"""Extract Tier 1 columns from the megatable into a D1-optimised SQLite database."""
 	input:
 		"data/megatable/all_megatable_v2_w_header.txt.gz"
 	output:
 		"data/megatable.db"
 	script:
 		"scripts/build_db.py"
+
+
+rule build_local_d1:
+	"""Seed the local miniflare D1 database from megatable.db for use with vite dev.
+
+	Miniflare names the D1 SQLite with a hash derived internally by workerd (Rust) — we
+	don't hardcode it. Instead, we initialize the directory via getPlatformProxy (same code
+	path the dev server uses, so paths always match), then glob for the hash-named file.
+	The sentinel .seeded tracks freshness for snakemake.
+	"""
+	input:
+		"data/megatable.db"
+	output:
+		touch("data/miniflare/.seeded")
+	shell:
+		"""
+		# Initialize miniflare's D1 directory structure using the same API the app uses
+		bun -e "
+		  const {{ getPlatformProxy }} = require('./node_modules/wrangler');
+		  getPlatformProxy({{ persist: {{ path: 'data/miniflare' }} }}).then(async p => {{
+		    try {{ await p.env.DB.prepare('SELECT 1').all(); }} catch(e) {{}}
+		    await p.dispose();
+		  }});
+		"
+		# Seed all D1 data files (miniflare also creates metadata.sqlite for internal use)
+		for f in data/miniflare/d1/miniflare-D1DatabaseObject/*.sqlite; do
+			[ "$(basename $f)" = "metadata.sqlite" ] && continue
+			wal="$f-wal" shm="$f-shm"
+			rm -f "$f" "$wal" "$shm"
+			cp {input} "$f"
+			sqlite3 "$f" "CREATE TABLE IF NOT EXISTS _cf_METADATA (key TEXT PRIMARY KEY, value TEXT);"
+		done
+		"""

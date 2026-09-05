@@ -13,9 +13,11 @@
 		"test": "bun test tests/"
 	},
 	"devDependencies": {
+		"@cloudflare/workers-types": "^5.20260905.1",
 		"@iconify-json/mdi": "^1.2.3",
 		"@iconify-json/solar": "^1.2.5",
 		"@sveltejs/adapter-auto": "^7.0.1",
+		"@sveltejs/adapter-cloudflare": "^7.2.9",
 		"@sveltejs/kit": "^2.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
 		"@unocss/preset-icons": "^66.7.5",
@@ -26,10 +28,10 @@
 		"svelte": "^5.56.1",
 		"svelte-check": "^4.6.0",
 		"typescript": "^6.0.3",
-		"vite": "^8.0.16"
+		"vite": "^8.0.16",
+		"wrangler": "^4.129.0"
 	},
 	"dependencies": {
-		"sqlite-wasm-http": "^1.2.0",
 		"svelteplot": "^0.14.2"
 	}
 }

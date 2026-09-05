@@ -132,9 +132,9 @@ BATCH_SIZE = 50_000
 
 con = sqlite3.connect(OUTPUT)
 # page_size must be set before the first write to take effect.
-# 1024 bytes matches the recommended requestChunkSize for sqlite-wasm-http:
-# smaller pages reduce wasted bytes per HTTP range request cache miss.
-con.execute("PRAGMA page_size=1024")
+# 4096 bytes aligns with D1's native page size and the OS VM page boundary,
+# giving the best read efficiency for a D1-deployed read-only database.
+con.execute("PRAGMA page_size=4096")
 # Use in-memory journal during the build for speed; no WAL/SHM files created.
 con.execute("PRAGMA journal_mode=MEMORY")
 con.execute("PRAGMA synchronous=OFF")
@@ -175,5 +175,10 @@ con.commit()
 print("Vacuuming...", file=sys.stderr)
 con.execute("PRAGMA journal_mode=DELETE")
 con.execute("VACUUM")
+# Bake in query-planner statistics so the first query doesn't cold-start.
+con.execute("PRAGMA optimize")
+# Database is read-only after this point; disable journaling so no rollback
+# file is ever created and D1 doesn't attempt to manage one.
+con.execute("PRAGMA journal_mode=OFF")
 con.close()
 print("Done.", file=sys.stderr)
