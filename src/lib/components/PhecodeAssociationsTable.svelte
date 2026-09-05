@@ -6,18 +6,22 @@
 
 	interface Props {
 		rows: PhecodeRow[];
+		hasMore: boolean;
+		onLoadMore: () => void;
 		selectedRow: PhecodeRow | null;
 		onSelect: (row: PhecodeRow) => void;
 		lowHeterogeneity: boolean;
 		onLowHeterogeneityChange: (v: boolean) => void;
 		onCrossLink: (phecodeId: string) => void;
 	}
-	let { rows, selectedRow, onSelect, lowHeterogeneity, onLowHeterogeneityChange, onCrossLink }: Props = $props();
+	let { rows, hasMore, onLoadMore, selectedRow, onSelect, lowHeterogeneity, onLowHeterogeneityChange, onCrossLink }: Props = $props();
 </script>
 
 <AssociationsTable
 	title="Top Associated Phecodes"
 	{rows}
+	{hasMore}
+	{onLoadMore}
 	{onSelect}
 	isRowSelected={(row) => selectedRow?.phecodeId === row.phecodeId}
 	{lowHeterogeneity}

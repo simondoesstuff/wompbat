@@ -6,18 +6,22 @@
 
 	interface Props {
 		rows: PgsRow[];
+		hasMore: boolean;
+		onLoadMore: () => void;
 		selectedRow: PgsRow | null;
 		onSelect: (row: PgsRow) => void;
 		lowHeterogeneity: boolean;
 		onLowHeterogeneityChange: (v: boolean) => void;
 		onCrossLink: (pgsId: string) => void;
 	}
-	let { rows, selectedRow, onSelect, lowHeterogeneity, onLowHeterogeneityChange, onCrossLink }: Props = $props();
+	let { rows, hasMore, onLoadMore, selectedRow, onSelect, lowHeterogeneity, onLowHeterogeneityChange, onCrossLink }: Props = $props();
 </script>
 
 <AssociationsTable
 	title="Top Associated Polygenic Scores"
 	{rows}
+	{hasMore}
+	{onLoadMore}
 	{onSelect}
 	isRowSelected={(row) => selectedRow?.pgsId === row.pgsId}
 	{lowHeterogeneity}

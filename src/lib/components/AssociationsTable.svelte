@@ -1,9 +1,11 @@
-<script lang="ts" generics="T extends { i2: number }">
+<script lang="ts" generics="T">
 	import type { Snippet } from 'svelte';
 
 	interface Props {
 		title: string;
 		rows: T[];
+		hasMore: boolean;
+		onLoadMore: () => void;
 		onSelect: (row: T) => void;
 		isRowSelected: (row: T) => boolean;
 		lowHeterogeneity: boolean;
@@ -19,6 +21,8 @@
 	let {
 		title,
 		rows,
+		hasMore,
+		onLoadMore,
 		onSelect,
 		isRowSelected,
 		lowHeterogeneity,
@@ -31,15 +35,10 @@
 		tableRow
 	}: Props = $props();
 
-	let showAll = $state(false);
-	let filteredRows = $derived(lowHeterogeneity ? rows.filter((r) => r.i2 < 40) : rows);
-	let displayedRows = $derived(showAll ? filteredRows : filteredRows.slice(0, 10));
-	let remaining = $derived(Math.max(0, filteredRows.length - 10));
-
 	function exportTsv() {
 		const lines = [
 			exportHeaders.join('\t'),
-			...filteredRows.map((r) => getExportRow(r).join('\t'))
+			...rows.map((r) => getExportRow(r).join('\t'))
 		];
 		const blob = new Blob([lines.join('\n')], { type: 'text/tab-separated-values' });
 		const a = document.createElement('a');
@@ -55,7 +54,7 @@
 <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
 	<h2 class="text-sm font-semibold text-fg">
 		{title}
-		<span class="text-neutral-400 font-normal ml-1">{filteredRows.length}</span>
+		<span class="text-neutral-400 font-normal ml-1">{rows.length}{hasMore ? '+' : ''}</span>
 	</h2>
 	<div class="flex items-center gap-3">
 		<label class="flex items-center gap-2 cursor-pointer select-none">
@@ -96,7 +95,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each displayedRows as row}
+			{#each rows as row}
 				{@const isSelected = isRowSelected(row)}
 				<tr
 					onclick={() => onSelect(row)}
@@ -111,13 +110,9 @@
 	</table>
 </div>
 
-{#if !showAll && remaining > 0}
-	<button onclick={() => (showAll = true)} class="show-more-btn">
-		↓ See more {entityLabel} ({remaining} remaining)
-	</button>
-{:else if showAll && remaining > 0}
-	<button onclick={() => (showAll = false)} class="show-more-btn">
-		↑ Show fewer
+{#if hasMore}
+	<button onclick={onLoadMore} class="show-more-btn">
+		↓ Load more {entityLabel}
 	</button>
 {/if}
 

@@ -11,39 +11,47 @@
 	import ForestPlot from '$lib/components/ForestPlot.svelte';
 	import CaseRatesChart from '$lib/components/CaseRatesChart.svelte';
 	import { searchByPhecode } from '$lib/api';
-	import type { PhecodeSearchResult, PgsRow, AutocompleteItem } from '$lib/types';
+	import { createPagination } from '$lib/pagination.svelte';
+	import type { PhecodeInfo, PgsRow, AncestryStats, AutocompleteItem } from '$lib/types';
 
 	let query = $state('');
-	let result = $state<PhecodeSearchResult | null>(null);
-	let loading = $state(false);
+	let info = $state<PhecodeInfo | null>(null);
+	let ancestryStats = $state<AncestryStats[]>([]);
 	let selectedRow = $state<PgsRow | null>(null);
-	let lowHeterogeneity = $state(false);
+
+	const pag = createPagination((offset, lh) => searchByPhecode(query, offset, lh));
 
 	$effect(() => {
 		const id = page.url.searchParams.get('id') ?? '';
 		if (id) {
 			query = id;
-			untrack(() => search(id));
+			untrack(() => runSearch(id));
 		}
 	});
 
-	async function search(q: string) {
+	async function runSearch(q: string) {
 		if (!q.trim()) {
-			result = null;
+			info = null;
+			ancestryStats = [];
+			pag.clear();
 			selectedRow = null;
 			return;
 		}
-		loading = true;
 		selectedRow = null;
-		try {
-			result = await searchByPhecode(q.trim());
-		} finally {
-			loading = false;
+		const result = await pag.search();
+		if (result) {
+			info = result.info;
+			ancestryStats = result.ancestryStats;
 		}
 	}
 
 	function onCommit(item: AutocompleteItem) {
 		goto(`/phecode?id=${encodeURIComponent(item.id)}`, { noScroll: true });
+	}
+
+	function onLowHeterogeneityChange(v: boolean) {
+		pag.setLowHeterogeneity(v);
+		if (query.trim() && info) runSearch(query.trim());
 	}
 
 	function crossLinkPgs(pgsId: string) {
@@ -66,17 +74,19 @@
 	{#snippet left()}
 		<SearchCombobox mode="phecode" bind:value={query} {onCommit} />
 
-		{#if loading}
+		{#if pag.loading}
 			<SearchLoadingSkeleton />
-		{:else if result}
-			<PhecodeInfoPanel info={result.info} />
+		{:else if info}
+			<PhecodeInfoPanel {info} />
 
 			<PgsAssociationsTable
-				rows={result.rows}
+				rows={pag.allRows}
+				hasMore={pag.hasMore}
+				onLoadMore={pag.loadMore}
 				{selectedRow}
 				onSelect={(row) => (selectedRow = row)}
-				{lowHeterogeneity}
-				onLowHeterogeneityChange={(v) => (lowHeterogeneity = v)}
+				lowHeterogeneity={pag.lowHeterogeneity}
+				{onLowHeterogeneityChange}
 				onCrossLink={crossLinkPgs}
 			/>
 		{:else}
@@ -91,9 +101,9 @@
 		{/if}
 
 		<!-- Mobile: charts below table -->
-		{#if result}
+		{#if info}
 			<div class="lg:hidden space-y-3 pt-2 border-t border-neutral-200">
-				<CaseRatesChart title="CCPM Biobank" stats={result.ancestryStats} />
+				<CaseRatesChart title="CCPM Biobank" stats={ancestryStats} />
 				{#if selectedRow}
 					{@render forestCard(selectedRow)}
 				{/if}
@@ -102,8 +112,8 @@
 	{/snippet}
 
 	{#snippet right()}
-		{#if result}
-			<CaseRatesChart title="CCPM Biobank" stats={result.ancestryStats} />
+		{#if info}
+			<CaseRatesChart title="CCPM Biobank" stats={ancestryStats} />
 
 			{#if selectedRow}
 				{@render forestCard(selectedRow)}

@@ -5,13 +5,24 @@ import type {
 	AutocompleteItem,
 } from './types';
 
-export async function searchByPgs(pgsId: string, unit: PgsUnit): Promise<PgsSearchResult> {
-	const res = await fetch(`/api/pgs/${encodeURIComponent(pgsId)}?unit=${unit}`);
+export async function searchByPgs(
+	pgsId: string,
+	unit: PgsUnit,
+	offset: number = 0,
+	lowHeterogeneity: boolean = false,
+): Promise<PgsSearchResult> {
+	const params = new URLSearchParams({ unit, offset: String(offset), lowHeterogeneity: String(lowHeterogeneity) });
+	const res = await fetch(`/api/pgs/${encodeURIComponent(pgsId)}?${params}`);
 	return res.json();
 }
 
-export async function searchByPhecode(phecodeId: string): Promise<PhecodeSearchResult> {
-	const res = await fetch(`/api/phecode/${encodeURIComponent(phecodeId)}`);
+export async function searchByPhecode(
+	phecodeId: string,
+	offset: number = 0,
+	lowHeterogeneity: boolean = false,
+): Promise<PhecodeSearchResult> {
+	const params = new URLSearchParams({ offset: String(offset), lowHeterogeneity: String(lowHeterogeneity) });
+	const res = await fetch(`/api/phecode/${encodeURIComponent(phecodeId)}?${params}`);
 	return res.json();
 }
 

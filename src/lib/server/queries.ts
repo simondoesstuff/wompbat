@@ -91,13 +91,27 @@ function toPgsRow(row: RawRow): PgsRow {
 	};
 }
 
-export async function queryPgs(db: D1Database, pgsId: string, unit: PgsUnit): Promise<PgsSearchResult> {
+export async function queryPgs(
+	db: D1Database,
+	pgsId: string,
+	unit: PgsUnit,
+	offset: number = 0,
+	lowHeterogeneity: boolean = false,
+): Promise<PgsSearchResult> {
 	const fdrCol = unit === 'continuous' ? 'passFDR10p_qPGS' : 'passFDR10p_bPGS';
 	const orderCol = unit === 'continuous' ? 'meta_qPGS_pMix' : 'meta_top10pPGS_pMix';
+	const i2Col = unit === 'continuous' ? 'meta_qPGS_i2' : 'meta_top10pPGS_i2';
+	const i2Clause = lowHeterogeneity ? ` AND ${i2Col} < 40` : '';
 	const { results } = await db
-		.prepare(`SELECT * FROM associations WHERE pgs = ? AND ${fdrCol} = 1 ORDER BY ${orderCol} ASC`)
-		.bind(pgsId)
+		.prepare(
+			`SELECT * FROM associations WHERE pgs = ? AND ${fdrCol} = 1${i2Clause} ORDER BY ${orderCol} ASC LIMIT 11 OFFSET ?`,
+		)
+		.bind(pgsId, offset)
 		.all<RawRow>();
+
+	const hasMore = results.length === 11;
+	if (hasMore) results.pop();
+
 	const firstRow = results[0];
 	return {
 		info: {
@@ -107,16 +121,27 @@ export async function queryPgs(db: D1Database, pgsId: string, unit: PgsUnit): Pr
 			catalogUrl: `https://www.pgscatalog.org/score/${pgsId}/`,
 		},
 		rows: results.map((r) => toPhecodeRow(r, unit)),
+		hasMore,
 	};
 }
 
-export async function queryPhecode(db: D1Database, phecodeId: string): Promise<PhecodeSearchResult> {
+export async function queryPhecode(
+	db: D1Database,
+	phecodeId: string,
+	offset: number = 0,
+	lowHeterogeneity: boolean = false,
+): Promise<PhecodeSearchResult> {
+	const i2Clause = lowHeterogeneity ? ' AND meta_qPGS_i2 < 40' : '';
 	const { results } = await db
 		.prepare(
-			`SELECT * FROM associations WHERE phecode = ? AND passFDR10p_qPGS = 1 ORDER BY meta_qPGS_pMix ASC`
+			`SELECT * FROM associations WHERE phecode = ? AND passFDR10p_qPGS = 1${i2Clause} ORDER BY meta_qPGS_pMix ASC LIMIT 11 OFFSET ?`,
 		)
-		.bind(phecodeId)
+		.bind(phecodeId, offset)
 		.all<RawRow>();
+
+	const hasMore = results.length === 11;
+	if (hasMore) results.pop();
+
 	const firstRow = results[0];
 	return {
 		info: {
@@ -129,5 +154,6 @@ export async function queryPhecode(db: D1Database, phecodeId: string): Promise<P
 		},
 		rows: results.map(toPgsRow),
 		ancestryStats: firstRow ? extractStats(firstRow) : [],
+		hasMore,
 	};
 }

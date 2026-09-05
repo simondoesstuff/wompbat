@@ -11,36 +11,34 @@
 	import ForestPlot from '$lib/components/ForestPlot.svelte';
 	import CaseRatesChart from '$lib/components/CaseRatesChart.svelte';
 	import { searchByPgs } from '$lib/api';
-	import type { PgsSearchResult, PhecodeRow, PgsUnit, AutocompleteItem } from '$lib/types';
+	import { createPagination } from '$lib/pagination.svelte';
+	import type { PgsInfo, PhecodeRow, PgsUnit, AutocompleteItem } from '$lib/types';
 
 	let query = $state('');
 	let unit = $state<PgsUnit>('continuous');
-	let result = $state<PgsSearchResult | null>(null);
-	let loading = $state(false);
+	let info = $state<PgsInfo | null>(null);
 	let selectedRow = $state<PhecodeRow | null>(null);
-	let lowHeterogeneity = $state(false);
+
+	const pag = createPagination((offset, lh) => searchByPgs(query, unit, offset, lh));
 
 	$effect(() => {
 		const id = page.url.searchParams.get('id') ?? '';
 		if (id) {
 			query = id;
-			untrack(() => search(id));
+			untrack(() => runSearch(id));
 		}
 	});
 
-	async function search(q: string) {
+	async function runSearch(q: string) {
 		if (!q.trim()) {
-			result = null;
+			info = null;
+			pag.clear();
 			selectedRow = null;
 			return;
 		}
-		loading = true;
 		selectedRow = null;
-		try {
-			result = await searchByPgs(q.trim(), unit);
-		} finally {
-			loading = false;
-		}
+		const result = await pag.search();
+		if (result) info = result.info;
 	}
 
 	function onCommit(item: AutocompleteItem) {
@@ -49,7 +47,12 @@
 
 	function setUnit(newUnit: PgsUnit) {
 		unit = newUnit;
-		if (query.trim()) search(query);
+		if (query.trim()) runSearch(query);
+	}
+
+	function onLowHeterogeneityChange(v: boolean) {
+		pag.setLowHeterogeneity(v);
+		if (query.trim() && info) runSearch(query.trim());
 	}
 
 	function crossLinkPhecode(phecodeId: string) {
@@ -106,17 +109,19 @@
 			</div>
 		</div>
 
-		{#if loading}
+		{#if pag.loading}
 			<SearchLoadingSkeleton />
-		{:else if result}
-			<PgsInfoPanel info={result.info} />
+		{:else if info}
+			<PgsInfoPanel {info} />
 
 			<PhecodeAssociationsTable
-				rows={result.rows}
+				rows={pag.allRows}
+				hasMore={pag.hasMore}
+				onLoadMore={pag.loadMore}
 				{selectedRow}
 				onSelect={(row) => (selectedRow = row)}
-				{lowHeterogeneity}
-				onLowHeterogeneityChange={(v) => (lowHeterogeneity = v)}
+				lowHeterogeneity={pag.lowHeterogeneity}
+				{onLowHeterogeneityChange}
 				onCrossLink={crossLinkPhecode}
 			/>
 		{:else}
@@ -131,7 +136,7 @@
 		{/if}
 
 		<!-- Mobile: show charts below table -->
-		{#if result && selectedRow}
+		{#if info && selectedRow}
 			<div class="lg:hidden pt-2 border-t border-neutral-200">
 				{@render chartCard(selectedRow)}
 			</div>
@@ -139,9 +144,9 @@
 	{/snippet}
 
 	{#snippet right()}
-		{#if result && selectedRow}
+		{#if info && selectedRow}
 			{@render chartCard(selectedRow)}
-		{:else if result}
+		{:else if info}
 			<EmptyState
 				icon="i-mdi-cursor-default-click text-3xl"
 				message="Select a row to view ancestry-stratified associations"

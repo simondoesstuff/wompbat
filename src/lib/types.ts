@@ -64,10 +64,12 @@ export interface PgsRow {
 export interface PgsSearchResult {
 	info: PgsInfo;
 	rows: PhecodeRow[];
+	hasMore: boolean;
 }
 
 export interface PhecodeSearchResult {
 	info: PhecodeInfo;
 	rows: PgsRow[];
 	ancestryStats: AncestryStats[];
+	hasMore: boolean;
 }

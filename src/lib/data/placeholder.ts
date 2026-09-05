@@ -243,7 +243,8 @@ export const pgsPlaceholder: PgsSearchResult = {
 			],
 			ancestryStats: stats(3473, 48702, 995, 34208, 607, 8698, 216, 7912, 238, 3488, 104, 2100)
 		}
-	]
+	],
+	hasMore: false
 };
 
 export const pgsAutocompleteData: AutocompleteItem[] = [
@@ -484,5 +485,6 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 				effect('Meta', 1.14, 2.2e-15)
 			]
 		}
-	]
+	],
+	hasMore: false
 };

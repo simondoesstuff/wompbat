@@ -164,8 +164,9 @@ with gzip.open(INPUT, "rt") as f:
 print(f"Total: {n:,} rows", file=sys.stderr)
 print("Building indices...", file=sys.stderr)
 
-con.execute("CREATE INDEX idx_pgs ON associations(pgs)")
-con.execute("CREATE INDEX idx_phecode ON associations(phecode)")
+con.execute("CREATE INDEX idx_pgs_qpgs ON associations(pgs, passFDR10p_qPGS, meta_qPGS_pMix)")
+con.execute("CREATE INDEX idx_pgs_bpgs ON associations(pgs, passFDR10p_bPGS, meta_top10pPGS_pMix)")
+con.execute("CREATE INDEX idx_phecode_qpgs ON associations(phecode, passFDR10p_qPGS, meta_qPGS_pMix)")
 
 con.commit()
 
