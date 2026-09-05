@@ -21,6 +21,7 @@
 		"@unocss/preset-icons": "^66.7.5",
 		"@unocss/preset-web-fonts": "^66.7.5",
 		"@unocss/preset-wind4": "^66.7.5",
+		"@unocss/svelte-scoped": "^66.10.0",
 		"bun-types": "^1.4.2",
 		"svelte": "^5.56.1",
 		"svelte-check": "^4.6.0",
@@ -28,7 +29,6 @@
 		"vite": "^8.0.16"
 	},
 	"dependencies": {
-		"@unocss/svelte-scoped": "^66.10.0",
 		"sqlite-wasm-http": "^1.2.0",
 		"svelteplot": "^0.14.2"
 	}
