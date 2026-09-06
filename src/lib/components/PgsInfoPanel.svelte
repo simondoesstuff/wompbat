@@ -21,6 +21,9 @@
 				{info.pgsId}
 			</a>
 			<span class="uppercase tracking-wider text-neutral-400 text-xs">Core Phenotype</span>
+			{#if info.pubYear}
+				<span class="text-neutral-400">{info.pubYear}</span>
+			{/if}
 		</div>
 		<p class="text-base font-semibold text-fg leading-snug">{info.corePhenotype}</p>
 	{/snippet}

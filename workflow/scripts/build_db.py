@@ -70,6 +70,7 @@ TIER1_COLUMNS = [
     "preval_ccpm",
     # PGS metadata
     "Nvar",
+    "pubyear",
     "efo_id",
     "efo_label",
 ]
@@ -95,6 +96,7 @@ INT_COLUMNS = frozenset(
         "ncase_meta",
         "ncontrol_meta",
         "Nvar",
+        "pubyear",
     }
 )
 

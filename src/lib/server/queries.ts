@@ -87,6 +87,7 @@ function toPgsRow(row: RawRow): PgsRow {
 		pValue,
 		i2: (row.meta_qPGS_i2 as number) ?? 0,
 		auc: (row.avg_auc_pgs_qPGS as number) ?? 0,
+		pubYear: (row.pubyear as number | null) ?? null,
 		effects: extractEffects(row, 'qPGS'),
 	};
 }
@@ -119,6 +120,7 @@ export async function queryPgs(
 			corePhenotype: (firstRow?.efo_label as string) ?? pgsId,
 			ccpmVariants: (firstRow?.Nvar as number) ?? 0,
 			catalogUrl: `https://www.pgscatalog.org/score/${pgsId}/`,
+			pubYear: (firstRow?.pubyear as number | null) ?? null,
 		},
 		rows: results.map((r) => toPhecodeRow(r, unit)),
 		hasMore,

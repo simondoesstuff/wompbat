@@ -24,6 +24,7 @@ export interface PgsInfo {
 	corePhenotype: string;
 	ccpmVariants: number;
 	catalogUrl: string;
+	pubYear: number | null;
 }
 
 export interface PhecodeInfo {
@@ -58,6 +59,7 @@ export interface PgsRow {
 	pValue: number;
 	i2: number;
 	auc: number;
+	pubYear: number | null;
 	effects: AncestryEffect[];
 }
 

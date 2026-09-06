@@ -51,7 +51,9 @@
 				{row.pgsId}<span class="i-mdi-arrow-top-right text-xs opacity-50"></span>
 			</button>
 		</td>
-		<td class="px-3 py-2 text-fg text-sm max-w-40 capitalize">{row.efoLabel}</td>
+		<td class="px-3 py-2 text-fg text-sm max-w-40 capitalize">
+			{row.efoLabel}{#if row.pubYear}<span class="text-neutral-400 text-xs font-normal not-capitalize ml-1">·{row.pubYear}</span>{/if}
+		</td>
 		<td class="td-num">{formatPValue(row.pValue)}</td>
 		<td class="td-num">{formatNumber(row.ccpmVariants)}</td>
 		<td class="td-num">{formatOR(row.metaOR, row.ciLower, row.ciUpper)}</td>
