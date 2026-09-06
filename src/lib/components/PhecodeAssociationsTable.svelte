@@ -34,8 +34,8 @@
 	{#snippet columnHeaders()}
 		<th class="th-cell">Phecode</th>
 		<th class="th-cell">Phenotype Name</th>
+		<th class="th-right">P-Value <span class="i-mdi-arrow-up inline-block text-xs align-middle opacity-60"></span></th>
 		<th class="th-right">Meta OR (95% CI)</th>
-		<th class="th-right">P-Value</th>
 		<th class="th-right">I²</th>
 		<th class="th-right">AUC</th>
 		<th class="th-right">Prevalence</th>
@@ -52,8 +52,8 @@
 			</button>
 		</td>
 		<td class="px-3 py-2 text-fg max-w-48">{row.phenotypeName}</td>
-		<td class="td-num">{formatOR(row.metaOR, row.ciLower, row.ciUpper)}</td>
 		<td class="td-num">{formatPValue(row.pValue)}</td>
+		<td class="td-num">{formatOR(row.metaOR, row.ciLower, row.ciUpper)}</td>
 		<td
 			class="px-3 py-2 text-right font-mono"
 			class:text-neutral-400={row.i2 < 40}

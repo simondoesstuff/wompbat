@@ -34,9 +34,9 @@
 	{#snippet columnHeaders()}
 		<th class="th-cell">PGS ID</th>
 		<th class="th-cell">EFO Label</th>
+		<th class="th-right">P-Value <span class="i-mdi-arrow-up inline-block text-xs align-middle opacity-60"></span></th>
 		<th class="th-right">CCPM Variants</th>
 		<th class="th-right">Meta OR (95% CI)</th>
-		<th class="th-right">P-Value</th>
 		<th class="th-right">I²</th>
 		<th class="th-right">AUC</th>
 	{/snippet}
@@ -52,9 +52,9 @@
 			</button>
 		</td>
 		<td class="px-3 py-2 text-fg text-sm max-w-40 capitalize">{row.efoLabel}</td>
+		<td class="td-num">{formatPValue(row.pValue)}</td>
 		<td class="td-num">{formatNumber(row.ccpmVariants)}</td>
 		<td class="td-num">{formatOR(row.metaOR, row.ciLower, row.ciUpper)}</td>
-		<td class="td-num">{formatPValue(row.pValue)}</td>
 		<td
 			class="px-3 py-2 text-right font-mono"
 			class:text-neutral-400={row.i2 < 40}
