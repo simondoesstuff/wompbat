@@ -60,7 +60,7 @@ function toPhecodeRow(row: RawRow, unit: PgsUnit): PhecodeRow {
 	const { ciLower, ciUpper } = deriveCI(metaOR, pValue);
 	return {
 		phecodeId: row.phecode as string,
-		phenotypeName: row.phecode as string,
+		phenotypeName: (row.phenotype as string) ?? (row.phecode as string),
 		metaOR,
 		ciLower,
 		ciUpper,
@@ -102,10 +102,10 @@ export async function queryPgs(
 	const fdrCol = unit === 'continuous' ? 'passFDR10p_qPGS' : 'passFDR10p_bPGS';
 	const orderCol = unit === 'continuous' ? 'meta_qPGS_pMix' : 'meta_top10pPGS_pMix';
 	const i2Col = unit === 'continuous' ? 'meta_qPGS_i2' : 'meta_top10pPGS_i2';
-	const i2Clause = lowHeterogeneity ? ` AND ${i2Col} < 40` : '';
+	const i2Clause = lowHeterogeneity ? ` AND a.${i2Col} < 40` : '';
 	const { results } = await db
 		.prepare(
-			`SELECT * FROM associations WHERE pgs = ? AND ${fdrCol} = 1${i2Clause} ORDER BY ${orderCol} ASC LIMIT 11 OFFSET ?`,
+			`SELECT a.*, d.phenotype FROM associations a LEFT JOIN phecode_defs d ON a.phecode = d.phecode WHERE a.pgs = ? AND a.${fdrCol} = 1${i2Clause} ORDER BY a.${orderCol} ASC LIMIT 11 OFFSET ?`,
 		)
 		.bind(pgsId, offset)
 		.all<RawRow>();
@@ -133,10 +133,10 @@ export async function queryPhecode(
 	offset: number = 0,
 	lowHeterogeneity: boolean = false,
 ): Promise<PhecodeSearchResult> {
-	const i2Clause = lowHeterogeneity ? ' AND meta_qPGS_i2 < 40' : '';
+	const i2Clause = lowHeterogeneity ? ' AND a.meta_qPGS_i2 < 40' : '';
 	const { results } = await db
 		.prepare(
-			`SELECT * FROM associations WHERE phecode = ? AND passFDR10p_qPGS = 1${i2Clause} ORDER BY meta_qPGS_pMix ASC LIMIT 11 OFFSET ?`,
+			`SELECT a.*, d.phenotype FROM associations a LEFT JOIN phecode_defs d ON a.phecode = d.phecode WHERE a.phecode = ? AND a.passFDR10p_qPGS = 1${i2Clause} ORDER BY a.meta_qPGS_pMix ASC LIMIT 11 OFFSET ?`,
 		)
 		.bind(phecodeId, offset)
 		.all<RawRow>();
@@ -148,7 +148,7 @@ export async function queryPhecode(
 	return {
 		info: {
 			phecodeId,
-			phenotypeName: phecodeId,
+			phenotypeName: (firstRow?.phenotype as string) ?? phecodeId,
 			domain: (firstRow?.phecode_domain as string) ?? '',
 			totalCases: (firstRow?.ncase_meta as number) ?? 0,
 			totalSample:

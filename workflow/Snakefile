@@ -13,7 +13,8 @@ rule decompress_megatable:
 rule build_ccpm_db:
 	"""Extract Tier 1 columns from the megatable into a D1-optimised SQLite database."""
 	input:
-		"data/megatable/all_megatable_v2_w_header.txt.gz"
+		"data/megatable/all_megatable_v2_w_header.txt.gz",
+		"data/phecode_definitions1.2.csv",
 	output:
 		"data/megatable.db"
 	script:
@@ -50,4 +51,14 @@ rule build_local_d1:
 			cp {input} "$f"
 			sqlite3 "$f" "CREATE TABLE IF NOT EXISTS _cf_METADATA (key TEXT PRIMARY KEY, value TEXT);"
 		done
+		"""
+
+rule decompress_phecode_defs:
+	input:
+		"data/phecode_definitions1.2.zip"
+	output:
+		"data/phecode_definitions1.2.csv"
+	shell:
+		"""
+		unzip "{input}" -d data
 		"""

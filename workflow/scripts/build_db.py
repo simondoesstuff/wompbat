@@ -128,6 +128,7 @@ def parse_val(val: str, col: str):
 
 
 INPUT = snakemake.input[0]  # noqa: F821  (snakemake injects this)
+PHECODE_DEFS = snakemake.input[1]  # noqa: F821
 OUTPUT = snakemake.output[0]  # noqa: F821
 
 BATCH_SIZE = 50_000
@@ -169,6 +170,31 @@ print("Building indices...", file=sys.stderr)
 con.execute("CREATE INDEX idx_pgs_qpgs ON associations(pgs, passFDR10p_qPGS, meta_qPGS_pMix)")
 con.execute("CREATE INDEX idx_pgs_bpgs ON associations(pgs, passFDR10p_bPGS, meta_top10pPGS_pMix)")
 con.execute("CREATE INDEX idx_phecode_qpgs ON associations(phecode, passFDR10p_qPGS, meta_qPGS_pMix)")
+
+print("Loading phecode definitions...", file=sys.stderr)
+con.execute(
+    """CREATE TABLE phecode_defs (
+        "phecode" TEXT PRIMARY KEY,
+        "phenotype" TEXT,
+        "category" TEXT,
+        "sex" TEXT,
+        "leaf" INTEGER
+    )"""
+)
+with open(PHECODE_DEFS, newline="") as f:
+    reader = csv.DictReader(f)
+    rows = [
+        (
+            row["phecode"],
+            row["phenotype"] or None,
+            row["category"] or None,
+            row["sex"] or None,
+            int(row["leaf"]) if row["leaf"] else None,
+        )
+        for row in reader
+    ]
+con.executemany("INSERT INTO phecode_defs VALUES (?, ?, ?, ?, ?)", rows)
+print(f"  {len(rows):,} phecode definitions loaded", file=sys.stderr)
 
 con.commit()
 

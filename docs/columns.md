@@ -82,7 +82,11 @@ See `deriveCI()` in `src/lib/utils.ts`.
 | `phecode_domain` | `PhecodeInfo.domain` |
 | `preval_ccpm` | `PhecodeRow.prevalence` |
 
-> **Note:** Phecode names (e.g. "Type 2 diabetes mellitus") are **not in the megatable**. They must come from a separate phecode reference lookup keyed on `phecode`.
+Phecode names come from the `phecode_defs` table (joined on `phecode`):
+
+| Column | Maps to |
+|--------|---------|
+| `phecode_defs.phenotype` | `PhecodeRow.phenotypeName`, `PhecodeInfo.phenotypeName` |
 
 ### PGS metadata
 
