@@ -44,11 +44,11 @@
 	{#snippet tableRow(row)}
 		<td class="px-3 py-2" onclick={(e) => e.stopPropagation()}>
 			<button
-				class="id-link hover:text-primary-900 transition-colors"
+				class="id-link hover:text-primary-900 transition-colors inline-flex items-center gap-0.5"
 				title="Search as this phecode"
 				onclick={() => onCrossLink(row.phecodeId)}
 			>
-				{row.phecodeId}
+				{row.phecodeId}<span class="i-mdi-arrow-top-right text-xs opacity-50"></span>
 			</button>
 		</td>
 		<td class="px-3 py-2 text-fg max-w-48">{row.phenotypeName}</td>
