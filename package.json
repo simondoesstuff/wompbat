@@ -29,6 +29,7 @@
 		"svelte": "^5.56.1",
 		"svelte-check": "^4.6.0",
 		"typescript": "^6.0.3",
+		"unocss": "^66.10.0",
 		"unocss-preset-theme": "^0.14.1",
 		"vite": "^8.0.16",
 		"wrangler": "^4.129.0"

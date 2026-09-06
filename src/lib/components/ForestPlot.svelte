@@ -73,7 +73,7 @@
 					marginTop={marginTop}
 					marginBottom={marginBottom}
 					y={{ domain: yDomain, axis: false }}
-					x={{ label: 'Effect Size (Odds Ratio)', grid: true, domain: xDomain }}
+					x={{ label: 'Effect Size (Odds Ratio)', grid: true, domain: xDomain, labelAnchor: 'center' }}
 					>
 					<RuleX data={[1]} stroke="#999" strokeDasharray="4,2" strokeWidth={1} />
 					<RuleY
