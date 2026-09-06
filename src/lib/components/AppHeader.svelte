@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 	import NavLink from './NavLink.svelte';
-	import { TOTAL_ASSOCIATIONS, GENOME_BUILD, ENSEMBL_VERSION } from '$lib/constants';
+	import { TOTAL_ASSOCIATIONS } from '$lib/constants';
 	import { formatNumber } from '$lib/utils';
 
 	let isPgs = $derived(page.url.pathname.startsWith('/pgs'));
@@ -26,7 +26,4 @@
 	</nav>
 	{/if}
 
-	<div class="text-xs text-neutral-400 shrink-0 hidden md:block">
-		{GENOME_BUILD} | {ENSEMBL_VERSION}
-	</div>
 </header>

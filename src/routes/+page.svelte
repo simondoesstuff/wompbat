@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import SearchCombobox from '$lib/components/SearchCombobox.svelte';
-	import { TOTAL_ASSOCIATIONS, GENOME_BUILD } from '$lib/constants';
+	import { TOTAL_ASSOCIATIONS } from '$lib/constants';
 	import { formatNumber } from '$lib/utils';
 	import type { AutocompleteItem } from '$lib/types';
 
@@ -28,7 +28,7 @@
 		<div class="text-center space-y-1">
 			<h1 class="text-2xl font-bold tracking-tight text-fg">CCPM Polygenic Score Browser</h1>
 			<p class="text-sm text-neutral-500">
-				Explore {formatNumber(TOTAL_ASSOCIATIONS)} PGS–phecode associations · {GENOME_BUILD}
+				Explore {formatNumber(TOTAL_ASSOCIATIONS)} PGS–phecode associations
 			</p>
 		</div>
 
