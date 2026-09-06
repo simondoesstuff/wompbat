@@ -79,7 +79,7 @@ function toPgsRow(row: RawRow): PgsRow {
 	const { ciLower, ciUpper } = deriveCI(metaOR, pValue);
 	return {
 		pgsId: row.pgs as string,
-		efoLabel: (row.efo_label as string) ?? (row.pgs as string),
+		efoLabel: ((row.efo_label as string) ?? (row.pgs as string)).replace(/^\w/, (c) => c.toUpperCase()),
 		ccpmVariants: (row.Nvar as number) ?? 0,
 		metaOR,
 		ciLower,
@@ -117,7 +117,7 @@ export async function queryPgs(
 	return {
 		info: {
 			pgsId,
-			corePhenotype: (firstRow?.efo_label as string) ?? pgsId,
+			corePhenotype: ((firstRow?.efo_label as string) ?? pgsId).replace(/^\w/, (c) => c.toUpperCase()),
 			ccpmVariants: (firstRow?.Nvar as number) ?? 0,
 			catalogUrl: `https://www.pgscatalog.org/score/${pgsId}/`,
 			pubYear: (firstRow?.pubyear as number | null) ?? null,

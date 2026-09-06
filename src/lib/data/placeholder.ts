@@ -297,7 +297,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 	rows: [
 		{
 			pgsId: 'PGS000054',
-			efoLabel: 'type 2 diabetes mellitus',
+			efoLabel: 'Type 2 diabetes mellitus',
 			ccpmVariants: 6_521_119,
 			metaOR: 1.38,
 			ciLower: deriveCI(1.38, 1.2e-88).ciLower,
@@ -316,7 +316,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 		},
 		{
 			pgsId: 'PGS000036',
-			efoLabel: 'coronary artery disease',
+			efoLabel: 'Coronary artery disease',
 			ccpmVariants: 6_990_025,
 			metaOR: 1.34,
 			ciLower: deriveCI(1.34, 4.8e-74).ciLower,
@@ -335,7 +335,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 		},
 		{
 			pgsId: 'PGS000854',
-			efoLabel: 'type 2 diabetes mellitus',
+			efoLabel: 'Type 2 diabetes mellitus',
 			ccpmVariants: 1_428_115,
 			metaOR: 1.31,
 			ciLower: deriveCI(1.31, 5.6e-69).ciLower,
@@ -354,7 +354,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 		},
 		{
 			pgsId: 'PGS001002',
-			efoLabel: 'type 2 diabetes mellitus',
+			efoLabel: 'Type 2 diabetes mellitus',
 			ccpmVariants: 9_114_883,
 			metaOR: 1.29,
 			ciLower: deriveCI(1.29, 7.4e-45).ciLower,
@@ -373,7 +373,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 		},
 		{
 			pgsId: 'PGS000129',
-			efoLabel: 'type 2 diabetes mellitus',
+			efoLabel: 'Type 2 diabetes mellitus',
 			ccpmVariants: 2_881_040,
 			metaOR: 1.26,
 			ciLower: deriveCI(1.26, 3.2e-38).ciLower,
@@ -392,7 +392,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 		},
 		{
 			pgsId: 'PGS000711',
-			efoLabel: 'type 2 diabetes mellitus',
+			efoLabel: 'Type 2 diabetes mellitus',
 			ccpmVariants: 3_902_504,
 			metaOR: 1.23,
 			ciLower: deriveCI(1.23, 5.1e-30).ciLower,
@@ -411,7 +411,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 		},
 		{
 			pgsId: 'PGS001285',
-			efoLabel: 'type 2 diabetes mellitus',
+			efoLabel: 'Type 2 diabetes mellitus',
 			ccpmVariants: 6_783_280,
 			metaOR: 1.22,
 			ciLower: deriveCI(1.22, 8.8e-28).ciLower,
@@ -430,7 +430,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 		},
 		{
 			pgsId: 'PGS000492',
-			efoLabel: 'type 2 diabetes mellitus',
+			efoLabel: 'Type 2 diabetes mellitus',
 			ccpmVariants: 1_126_482,
 			metaOR: 1.20,
 			ciLower: deriveCI(1.20, 3.4e-24).ciLower,
@@ -449,7 +449,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 		},
 		{
 			pgsId: 'PGS001558',
-			efoLabel: 'type 2 diabetes mellitus',
+			efoLabel: 'Type 2 diabetes mellitus',
 			ccpmVariants: 5_224_998,
 			metaOR: 1.16,
 			ciLower: deriveCI(1.16, 1.5e-18).ciLower,
@@ -468,7 +468,7 @@ export const phecodePlaceholder: PhecodeSearchResult = {
 		},
 		{
 			pgsId: 'PGS000398',
-			efoLabel: 'type 2 diabetes mellitus',
+			efoLabel: 'Type 2 diabetes mellitus',
 			ccpmVariants: 4_102_337,
 			metaOR: 1.14,
 			ciLower: deriveCI(1.14, 2.2e-15).ciLower,
