@@ -51,7 +51,11 @@ export default defineConfig({
       },
     }) as any,
     presetIcons(),
-    presetWebFonts(),
+    presetWebFonts({
+      fonts: {
+        display: { name: "Fredoka", weights: ["500"] },
+      },
+    }),
   ],
   theme: {
     colors: {

@@ -20,14 +20,15 @@
 </script>
 
 <svelte:head>
-	<title>CCPM Browser</title>
+	<title>WOMPBAT</title>
 </svelte:head>
 
 <div class="flex flex-1 items-center justify-center px-4 py-16">
 	<div class="w-full max-w-xl space-y-8">
 		<div class="text-center space-y-1">
-			<h1 class="text-2xl font-bold tracking-tight text-fg">CCPM Polygenic Score Browser</h1>
-			<p class="text-sm text-neutral-500">
+			<h1 class="text-4xl p-3 font-display tracking-wide text-fg">WOMPBAT</h1>
+			<!-- <h2 class="text-2xl text-neutral-500">Polygenic Score Browser</h2> -->
+			<p class="text-md text-neutral-500">
 				Explore {formatNumber(TOTAL_ASSOCIATIONS)} PGS–phecode associations
 			</p>
 		</div>
