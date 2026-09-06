@@ -170,6 +170,13 @@ print("Building indices...", file=sys.stderr)
 con.execute("CREATE INDEX idx_pgs_qpgs ON associations(pgs, passFDR10p_qPGS, meta_qPGS_pMix)")
 con.execute("CREATE INDEX idx_pgs_bpgs ON associations(pgs, passFDR10p_bPGS, meta_top10pPGS_pMix)")
 con.execute("CREATE INDEX idx_phecode_qpgs ON associations(phecode, passFDR10p_qPGS, meta_qPGS_pMix)")
+con.execute("CREATE INDEX idx_efo_label ON associations(efo_label)")
+
+print("Building pgs_labels lookup table...", file=sys.stderr)
+con.execute("CREATE TABLE pgs_labels (pgs TEXT PRIMARY KEY, efo_label TEXT)")
+con.execute("INSERT INTO pgs_labels SELECT DISTINCT pgs, efo_label FROM associations")
+con.execute("CREATE INDEX idx_pgs_labels_efo ON pgs_labels(efo_label)")
+print("  done", file=sys.stderr)
 
 print("Loading phecode definitions...", file=sys.stderr)
 con.execute(
@@ -194,6 +201,7 @@ with open(PHECODE_DEFS, newline="") as f:
         for row in reader
     ]
 con.executemany("INSERT INTO phecode_defs VALUES (?, ?, ?, ?, ?)", rows)
+con.execute("CREATE INDEX idx_phecode_phenotype ON phecode_defs(phenotype)")
 print(f"  {len(rows):,} phecode definitions loaded", file=sys.stderr)
 
 con.commit()

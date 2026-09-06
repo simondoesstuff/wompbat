@@ -7,7 +7,7 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
+		"prepare": "svelte-kit sync || echo '' && cp node_modules/sql.js/dist/sql-wasm-browser.wasm static/sql-wasm-browser.wasm",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "bun test tests/"
@@ -20,6 +20,7 @@
 		"@sveltejs/adapter-cloudflare": "^7.2.9",
 		"@sveltejs/kit": "^2.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
+		"@types/sql.js": "^1.4.11",
 		"@unocss/preset-icons": "^66.7.5",
 		"@unocss/preset-web-fonts": "^66.7.5",
 		"@unocss/preset-wind4": "^66.7.5",
@@ -33,6 +34,7 @@
 		"wrangler": "^4.129.0"
 	},
 	"dependencies": {
+		"sql.js": "^1.14.2",
 		"svelteplot": "^0.14.2"
 	}
 }

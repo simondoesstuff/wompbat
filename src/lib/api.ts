@@ -26,20 +26,31 @@ export async function searchByPhecode(
 	return res.json();
 }
 
+function matchesPgsId(id: string, q: string): boolean {
+	if (id.toLowerCase().startsWith(q)) return true;
+	// Allow matching by significant digits only: "485" matches "PGS004859"
+	if (/^\d+$/.test(q)) {
+		return String(parseInt(id.slice(3), 10)).startsWith(q);
+	}
+	return false;
+}
+
 export async function autocompleteByPgs(query: string): Promise<AutocompleteItem[]> {
-	const { pgsAutocompleteData } = await import('./data/placeholder');
 	if (!query.trim()) return [];
+	const { getAutocompleteIndex } = await import('./autocomplete-db');
 	const q = query.toLowerCase();
-	return pgsAutocompleteData
-		.filter((item) => item.id.toLowerCase().includes(q) || item.label.toLowerCase().includes(q))
+	const index = await getAutocompleteIndex('pgs');
+	return index
+		.filter((item) => matchesPgsId(item.id, q) || item.label.toLowerCase().startsWith(q))
 		.slice(0, 8);
 }
 
 export async function autocompleteByPhecode(query: string): Promise<AutocompleteItem[]> {
-	const { phecodeAutocompleteData } = await import('./data/placeholder');
 	if (!query.trim()) return [];
+	const { getAutocompleteIndex } = await import('./autocomplete-db');
 	const q = query.toLowerCase();
-	return phecodeAutocompleteData
-		.filter((item) => item.id.toLowerCase().includes(q) || item.label.toLowerCase().includes(q))
+	const index = await getAutocompleteIndex('phecode');
+	return index
+		.filter((item) => item.id.startsWith(q) || item.label.toLowerCase().startsWith(q))
 		.slice(0, 8);
 }

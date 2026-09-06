@@ -28,3 +28,6 @@ vite.config.ts.timestamp-*
 # Data
 /data/*
 !/data/phecode_definitions1.2.zip
+
+# Generated static assets (produced by prepare / build pipeline)
+/static/sql-wasm-browser.wasm

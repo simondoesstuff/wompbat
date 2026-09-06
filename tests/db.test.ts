@@ -43,15 +43,27 @@ describe("schema", () => {
     }
   });
 
-  test("indices exist on pgs and phecode", () => {
+  test("indices exist on associations", () => {
     const names = db
       .query(
         "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='associations'",
       )
       .all()
       .map((r: any) => r.name);
-    expect(names).toContain("idx_pgs");
-    expect(names).toContain("idx_phecode");
+    expect(names).toContain("idx_pgs_qpgs");
+    expect(names).toContain("idx_pgs_bpgs");
+    expect(names).toContain("idx_phecode_qpgs");
+    expect(names).toContain("idx_efo_label");
+  });
+
+  test("autocomplete index exists on phecode_defs", () => {
+    const names = db
+      .query(
+        "SELECT name FROM sqlite_master WHERE type='index' AND tbl_name='phecode_defs'",
+      )
+      .all()
+      .map((r: any) => r.name);
+    expect(names).toContain("idx_phecode_phenotype");
   });
 
   test("row count is in expected range", () => {

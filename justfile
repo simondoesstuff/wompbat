@@ -3,7 +3,6 @@ dev:
 
 install:
 	bun i
-	uv sync
 
 test:
 	bun run test
