@@ -1,5 +1,6 @@
 <script lang="ts" generics="T">
 	import type { Snippet } from 'svelte';
+	import { tick } from 'svelte';
 
 	interface Props {
 		title: string;
@@ -34,6 +35,29 @@
 		columnHeaders,
 		tableRow
 	}: Props = $props();
+
+	let tableContainer: HTMLElement;
+
+	async function handleKeydown(e: KeyboardEvent) {
+		if (!['ArrowDown', 'ArrowUp', 'j', 'k'].includes(e.key)) return;
+		if (rows.length === 0) return;
+		e.preventDefault();
+
+		const currentIndex = rows.findIndex((r) => isRowSelected(r));
+		let nextIndex: number;
+
+		if (e.key === 'ArrowDown' || e.key === 'j') {
+			nextIndex = currentIndex === -1 ? 0 : Math.min(currentIndex + 1, rows.length - 1);
+		} else {
+			nextIndex = currentIndex <= 0 ? 0 : currentIndex - 1;
+		}
+
+		if (nextIndex !== currentIndex || currentIndex === -1) {
+			onSelect(rows[nextIndex]);
+			await tick();
+			tableContainer?.querySelector('tr.bg-primary-100')?.scrollIntoView({ block: 'nearest' });
+		}
+	}
 
 	function exportTsv() {
 		const lines = [
@@ -92,7 +116,13 @@
 	</div>
 </div>
 
-<div class="overflow-x-auto rounded-md border border-neutral-200">
+<div
+	class="overflow-x-auto rounded-md border border-neutral-200 focus:outline-2 focus:outline-primary-400 focus-visible:outline-offset-1"
+	bind:this={tableContainer}
+	tabindex="0"
+	role="grid"
+	onkeydown={handleKeydown}
+>
 	<table class="w-full min-w-max text-xs">
 		<thead>
 			<tr class="bg-neutral-100 text-neutral-500 uppercase tracking-wide text-left">
@@ -103,7 +133,7 @@
 			{#each rows as row}
 				{@const isSelected = isRowSelected(row)}
 				<tr
-					onclick={() => onSelect(row)}
+					onclick={() => { tableContainer.focus(); onSelect(row); }}
 					class="border-t border-neutral-100 cursor-pointer transition-colors"
 					class:bg-primary-100={isSelected}
 					class:hover:bg-neutral-50={!isSelected}
