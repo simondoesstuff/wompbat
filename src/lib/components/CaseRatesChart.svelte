@@ -11,24 +11,25 @@
 	}
 	let { title, stats }: Props = $props();
 
-	// Band order: bottom→top in SveltePlot band scale
-	const yDomain = COHORT_BAND_DOMAIN;
-	const displayOrder = [...yDomain].reverse() as Ancestry[];
-
 	const rowHeight = 28;
 	const marginTop = 4;
 	const marginBottom = 40;
-	const plotHeight = yDomain.length * rowHeight + marginTop + marginBottom;
+
+	// Only include ancestries present in stats, preserving canonical order
+	let yDomain = $derived(COHORT_BAND_DOMAIN.filter((a) => stats.some((s) => s.ancestry === a)));
+	let displayOrder = $derived([...yDomain].reverse() as Ancestry[]);
+	let plotHeight = $derived(yDomain.length * rowHeight + marginTop + marginBottom);
 
 	let chartWidth = $state(0);
 
 	let maxSample = $derived(Math.max(...stats.map((s) => s.sample), 1));
 
+	// Embed literal hex colors so Observable Plot uses them directly without a color scale
 	let caseData = $derived(
-		stats.map((s) => ({ ...s, proportion: s.cases / maxSample }))
+		stats.map((s) => ({ ...s, proportion: s.cases / maxSample, color: ANCESTRY_COLORS[s.ancestry] }))
 	);
 	let sampleData = $derived(
-		stats.map((s) => ({ ...s, proportion: s.sample / maxSample }))
+		stats.map((s) => ({ ...s, proportion: s.sample / maxSample, color: ANCESTRY_COLORS[s.ancestry] }))
 	);
 </script>
 
@@ -36,7 +37,7 @@
 	<span class="section-label">{title}</span>
 
 	{#if browser && stats.length > 0}
-		<div class="flex items-start gap-0 mt-1">
+		<div class="flex items-start gap-0 mt-1 bg-bg rounded p-3">
 			<!-- Ancestry label column -->
 			<div class="flex flex-col shrink-0 pr-2" style="padding-top: {marginTop}px; margin-bottom: {marginBottom}px;">
 				{#each displayOrder as ancestry}
@@ -51,7 +52,7 @@
 			</div>
 
 			<!-- SveltePlot bar chart -->
-			<div class="flex-1 min-w-0 chart-inner bg-bg rounded p-3 rounded" bind:clientWidth={chartWidth}>
+			<div class="flex-1 min-w-0 chart-inner" bind:clientWidth={chartWidth}>
 				{#if chartWidth > 16}
 				<Plot
 					height={plotHeight}
@@ -61,16 +62,12 @@
 					marginBottom={marginBottom}
 					y={{ domain: yDomain, axis: false }}
 					x={{ label: 'Proportion of cohort', domain: [0, 1.05] }}
-					color={{
-						domain: [...displayOrder],
-						range: displayOrder.map((a) => ANCESTRY_COLORS[a])
-					}}
 				>
 					<RuleX data={[0]} stroke="#ccc" strokeWidth={1} />
 					<!-- Sample bars (background, transparent) -->
-					<BarX data={sampleData} x="proportion" y="ancestry" fill="ancestry" opacity={0.2} inset={0} />
+					<BarX data={sampleData} x="proportion" y="ancestry" fill="color" opacity={0.2} inset={0} />
 					<!-- Case bars (foreground, solid — shorter by data, not by inset) -->
-					<BarX data={caseData} x="proportion" y="ancestry" fill="ancestry" opacity={0.85} inset={0} />
+					<BarX data={caseData} x="proportion" y="ancestry" fill="color" opacity={0.85} inset={0} />
 				</Plot>
 				{/if}
 			</div>

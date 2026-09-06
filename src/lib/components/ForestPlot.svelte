@@ -13,15 +13,14 @@
 	}
 	let { title, subtitle, model, effects }: Props = $props();
 
-	// Band scale: domain goes bottom→top, so 'EUR' ends up at visual top
-	const yDomain = FOREST_BAND_DOMAIN;
-	// Display order for HTML columns (top→bottom in screen space)
-	const displayOrder = [...yDomain].reverse() as Ancestry[];
-
 	const rowHeight = 32;
 	const marginTop = 4;
 	const marginBottom = 44;
-	const plotHeight = yDomain.length * rowHeight + marginTop + marginBottom;
+
+	// Only include ancestries present in effects, preserving canonical order
+	let yDomain = $derived(FOREST_BAND_DOMAIN.filter((a) => effects.some((e) => e.ancestry === a)));
+	let displayOrder = $derived([...yDomain].reverse() as Ancestry[]);
+	let plotHeight = $derived(yDomain.length * rowHeight + marginTop + marginBottom);
 
 	let chartWidth = $state(0);
 
@@ -48,7 +47,7 @@
 	<h3 class="font-semibold text-sm mb-2 text-fg">{subtitle}</h3>
 
 	{#if browser && effects.length > 0}
-		<div class="flex items-start gap-0 overflow-x-auto">
+		<div class="flex items-start gap-0 overflow-x-auto bg-bg p-3 rounded">
 			<!-- Ancestry label column -->
 			<div
 				class="flex flex-col shrink-0 pr-2"
@@ -65,7 +64,7 @@
 			</div>
 
 			<!-- SveltePlot chart (no y-axis, just CI bars + dots + reference line) -->
-			<div class="flex-1 min-w-0 chart-inner bg-bg p-3 rounded" bind:clientWidth={chartWidth}>
+			<div class="flex-1 min-w-0 chart-inner" bind:clientWidth={chartWidth}>
 				{#if chartWidth > 16}
 				<Plot
 					height={plotHeight}
