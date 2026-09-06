@@ -61,7 +61,7 @@
 					marginTop={marginTop}
 					marginBottom={marginBottom}
 					y={{ domain: yDomain, axis: false }}
-					x={{ label: 'Proportion of cohort', domain: [0, 1.05] }}
+					x={{ label: 'Proportion of cohort', domain: [0, 1.05], labelAnchor: 'center' }}
 				>
 					<RuleX data={[0]} stroke="#ccc" strokeWidth={1} />
 					<!-- Sample bars (background, transparent) -->
