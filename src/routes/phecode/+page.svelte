@@ -60,7 +60,7 @@
 </script>
 
 {#snippet forestCard(row: PgsRow)}
-	<div class="border-2 border-primary-200 rounded-lg p-3">
+	<div class="border-2 border-primary-200 rounded-lg p-3 bg-white">
 		<ForestPlot
 			title="Multi-Ancestry Validation"
 			subtitle="{row.pgsId} — {row.efoLabel}"
@@ -103,7 +103,9 @@
 		<!-- Mobile: charts below table -->
 		{#if info}
 			<div class="lg:hidden space-y-3 pt-2 border-t border-neutral-200">
-				<CaseRatesChart title="CCPM Biobank" stats={ancestryStats} />
+				<div class="rounded-lg p-3">
+					<CaseRatesChart title="CCPM Biobank" stats={ancestryStats} />
+				</div>
 				{#if selectedRow}
 					{@render forestCard(selectedRow)}
 				{/if}
@@ -113,7 +115,9 @@
 
 	{#snippet right()}
 		{#if info}
-			<CaseRatesChart title="CCPM Biobank" stats={ancestryStats} />
+			<div class="p-3">
+				<CaseRatesChart title="CCPM Biobank" stats={ancestryStats} />
+			</div>
 
 			{#if selectedRow}
 				{@render forestCard(selectedRow)}

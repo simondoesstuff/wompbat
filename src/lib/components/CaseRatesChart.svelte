@@ -51,7 +51,7 @@
 			</div>
 
 			<!-- SveltePlot bar chart -->
-			<div class="flex-1 min-w-0 chart-inner" bind:clientWidth={chartWidth}>
+			<div class="flex-1 min-w-0 chart-inner bg-bg rounded p-3 rounded" bind:clientWidth={chartWidth}>
 				{#if chartWidth > 16}
 				<Plot
 					height={plotHeight}

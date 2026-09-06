@@ -61,7 +61,7 @@
 </script>
 
 {#snippet chartCard(row: PhecodeRow)}
-	<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4">
+	<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4 bg-white">
 		<ForestPlot
 			title="Stratified Association"
 			subtitle={row.phenotypeName}

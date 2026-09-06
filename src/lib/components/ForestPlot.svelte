@@ -65,7 +65,7 @@
 			</div>
 
 			<!-- SveltePlot chart (no y-axis, just CI bars + dots + reference line) -->
-			<div class="flex-1 min-w-0 chart-inner" bind:clientWidth={chartWidth}>
+			<div class="flex-1 min-w-0 chart-inner bg-bg p-3 rounded" bind:clientWidth={chartWidth}>
 				{#if chartWidth > 16}
 				<Plot
 					height={plotHeight}
