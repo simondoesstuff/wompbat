@@ -87,17 +87,14 @@
 	</div>
 </div>
 
-<style>
+<style lang="postcss">
 	.mode-btn {
-		padding: 0.5rem 1.25rem;
-		transition: color 150ms, background-color 150ms;
-		color: oklch(from var(--color-neutral) 0.40 c h);
+		@apply px-5 py-2 text-neutral-600 transition-colors duration-150;
 	}
 	.mode-btn:not(.active):hover {
-		background-color: oklch(from var(--color-neutral) 0.90 c h);
+		@apply bg-neutral-100;
 	}
 	.mode-btn.active {
-		background-color: oklch(from var(--color-primary) 0.30 c h);
-		color: var(--color-bg);
+		@apply bg-primary-700 text-bg;
 	}
 </style>
