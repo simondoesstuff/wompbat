@@ -63,9 +63,8 @@
 {#snippet chartCard(row: PhecodeRow)}
 	<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4 bg-white">
 		<ForestPlot
-			title="Stratified Association"
-			subtitle={row.phenotypeName}
-			model="Continuous LogOR"
+			title="Multi-Ancestry Association"
+			subtitle="{info?.pgsId} — {info?.corePhenotype}"
 			effects={row.effects}
 		/>
 		<div class="border-t border-neutral-200 pt-4">

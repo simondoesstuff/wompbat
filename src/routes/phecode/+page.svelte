@@ -62,9 +62,8 @@
 {#snippet forestCard(row: PgsRow)}
 	<div class="border-2 border-primary-200 rounded-lg p-3 bg-white">
 		<ForestPlot
-			title="Multi-Ancestry Validation"
+			title="Multi-Ancestry Association"
 			subtitle="{row.pgsId} — {row.efoLabel}"
-			model="Continuous LogOR"
 			effects={row.effects}
 		/>
 	</div>
