@@ -136,7 +136,8 @@
 					onclick={() => { tableContainer.focus(); onSelect(row); }}
 					class="border-t border-neutral-100 cursor-pointer transition-colors"
 					class:bg-primary-100={isSelected}
-					class:hover:bg-neutral-50={!isSelected}
+					class:hover:bg-neutral-100={!isSelected}
+					class:dark:bg-primary-800={isSelected}
 				>
 					{@render tableRow(row)}
 				</tr>

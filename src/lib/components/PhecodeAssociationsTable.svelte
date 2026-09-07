@@ -44,7 +44,7 @@
 	{#snippet tableRow(row)}
 		<td class="px-3 py-2" onclick={(e) => e.stopPropagation()}>
 			<button
-				class="id-link hover:text-primary-900 transition-colors inline-flex items-center gap-0.5"
+				class="id-link transition-colors inline-flex items-center gap-0.5"
 				title="Search as this phecode"
 				onclick={() => onCrossLink(row.phecodeId)}
 			>

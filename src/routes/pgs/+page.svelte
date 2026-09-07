@@ -63,7 +63,7 @@
 </script>
 
 {#snippet chartCard(row: PhecodeRow)}
-	<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4 bg-white">
+	<div class="border-2 border-primary-200 rounded-lg p-3 space-y-4 bg-white dark:bg-black">
 		<ForestPlot
 			title="Multi-Ancestry Association"
 			subtitle="{info?.pgsId} — {info?.corePhenotype}"

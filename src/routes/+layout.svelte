@@ -1,8 +1,22 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import AppHeader from '$lib/components/AppHeader.svelte';
 	import favicon from '$lib/assets/favicon.svg';
 
-	let { children } = $props();
+	let { children, data } = $props();
+
+	let dark = $state(untrack(() => data.dark));
+
+	function toggleDark() {
+		dark = !dark;
+		if (dark) {
+			document.documentElement.classList.add('dark');
+			document.cookie = 'theme=dark; path=/; max-age=31536000; SameSite=Lax';
+		} else {
+			document.documentElement.classList.remove('dark');
+			document.cookie = 'theme=light; path=/; max-age=31536000; SameSite=Lax';
+		}
+	}
 </script>
 
 <svelte:head>
@@ -10,7 +24,7 @@
 </svelte:head>
 
 <div class="flex flex-col min-h-screen">
-	<AppHeader />
+	<AppHeader {dark} {toggleDark} />
 	{@render children()}
 </div>
 

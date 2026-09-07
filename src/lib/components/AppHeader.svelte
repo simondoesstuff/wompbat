@@ -5,6 +5,8 @@
 	import { formatNumber } from '$lib/utils';
 	import favicon from '$lib/assets/favicon.svg';
 
+	let { dark, toggleDark }: { dark: boolean; toggleDark: () => void } = $props();
+
 	let isPgs = $derived(page.url.pathname.startsWith('/pgs'));
 	let isPhecode = $derived(page.url.pathname.startsWith('/phecode'));
 	let isHome = $derived(page.url.pathname === '/');
@@ -28,4 +30,15 @@
 	</nav>
 	{/if}
 
+	<button
+		onclick={toggleDark}
+		class="p-1.5 rounded-md text-neutral-500 hover:text-fg hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+		aria-label={dark ? 'Switch to light mode' : 'Switch to dark mode'}
+	>
+		{#if dark}
+			<span class="i-solar-sun-bold text-lg block"></span>
+		{:else}
+			<span class="i-solar-moon-bold text-lg block"></span>
+		{/if}
+	</button>
 </header>

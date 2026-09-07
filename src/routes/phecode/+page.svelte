@@ -61,7 +61,7 @@
 </script>
 
 {#snippet forestCard(row: PgsRow)}
-	<div class="border-2 border-primary-200 rounded-lg p-3 bg-white">
+	<div class="border-2 border-primary-200 rounded-lg p-3 bg-white dark:bg-[#21283a]">
 		<ForestPlot
 			title="Multi-Ancestry Association"
 			subtitle="{row.pgsId} — {row.efoLabel}"
