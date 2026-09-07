@@ -31,3 +31,9 @@ vite.config.ts.timestamp-*
 
 # Generated static assets (produced by prepare / build pipeline)
 /static/sql-wasm-browser.wasm
+
+# Terraform
+terraform.tfstate
+terraform/.terraform/
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup

@@ -53,6 +53,28 @@ rule build_local_d1:
 		done
 		"""
 
+rule dump_megatable_sql:
+	"""Split megatable.db into D1-compatible SQL chunks for upload.
+
+	Single-row INSERTs are fine; the D1 session limit is ~94k statements, so we
+	use 50k-row chunks to stay safely within it.
+	"""
+	input:
+		"data/megatable.db"
+	output:
+		directory("data/megatable_sql")
+	shell:
+		"""
+		mkdir -p {output}
+		sqlite3 {input} .schema | grep -v "^CREATE TABLE sqlite_" > {output}/00_schema.sql
+		sqlite3 {input} .dump \
+			| grep "^INSERT" \
+			| grep -v "sqlite_stat" \
+			| split -l 50000 - {output}/data_
+		for f in {output}/data_??; do mv "$f" "$f.sql"; done
+		"""
+
+
 rule build_autocomplete_db:
 	"""Extract pgs_labels and phecode_defs into a small static SQLite database for client-side autocomplete."""
 	input:
