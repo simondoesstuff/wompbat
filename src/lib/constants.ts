@@ -21,9 +21,6 @@ export const ANCESTRY_COLORS: Record<Ancestry, string> = {
   Meta: "#222222",
 };
 
-export const ANCESTRY_COLOR_DOMAIN = ANCESTRIES;
-export const ANCESTRY_COLOR_RANGE = ANCESTRIES.map((a) => ANCESTRY_COLORS[a]);
-
 // Band-scale y-domains for svelteplot (bottom→top order so EUR renders at visual top)
 export const FOREST_BAND_DOMAIN: Ancestry[] = [
   "Meta",
@@ -68,5 +65,3 @@ export const PHECODE_EXPORT_HEADERS = [
 ] as const;
 
 export const TOTAL_ASSOCIATIONS = 5_747_365;
-export const GENOME_BUILD = "GRCh38";
-export const ENSEMBL_VERSION = "Ensembl v106";

@@ -12,6 +12,7 @@
 	import CaseRatesChart from '$lib/components/CaseRatesChart.svelte';
 	import { searchByPhecode } from '$lib/api';
 	import { createPagination } from '$lib/pagination.svelte';
+	import { pgsUrl, phecodeUrl } from '$lib/utils';
 	import type { PhecodeInfo, PgsRow, AncestryStats, AutocompleteItem } from '$lib/types';
 
 	let query = $state('');
@@ -46,7 +47,7 @@
 	}
 
 	function onCommit(item: AutocompleteItem) {
-		goto(`/phecode?id=${encodeURIComponent(item.id)}`, { noScroll: true });
+		goto(phecodeUrl(item.id), { noScroll: true });
 	}
 
 	function onLowHeterogeneityChange(v: boolean) {
@@ -55,7 +56,7 @@
 	}
 
 	function crossLinkPgs(pgsId: string) {
-		goto(`/pgs?id=${encodeURIComponent(pgsId)}`);
+		goto(pgsUrl(pgsId));
 	}
 </script>
 

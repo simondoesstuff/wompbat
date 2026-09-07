@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import SearchCombobox from '$lib/components/SearchCombobox.svelte';
+	import ToggleGroup from '$lib/components/ToggleGroup.svelte';
 	import { TOTAL_ASSOCIATIONS } from '$lib/constants';
-	import { formatNumber } from '$lib/utils';
+	import { formatNumber, pgsUrl, phecodeUrl } from '$lib/utils';
 	import type { AutocompleteItem } from '$lib/types';
 
 	type SearchMode = 'pgs' | 'phecode';
@@ -10,7 +11,7 @@
 	let query = $state('');
 
 	function onCommit(item: AutocompleteItem) {
-		goto(`/${mode}?id=${encodeURIComponent(item.id)}`);
+		goto(mode === 'pgs' ? pgsUrl(item.id) : phecodeUrl(item.id));
 	}
 
 	function switchMode(m: SearchMode) {
@@ -35,22 +36,15 @@
 
 		<div class="space-y-3">
 			<div class="flex justify-center">
-				<div class="flex rounded-md border border-neutral-300 overflow-hidden text-sm">
-					<button
-						onclick={() => switchMode('pgs')}
-						class="mode-btn"
-						class:active={mode === 'pgs'}
-					>
-						By Polygenic Score
-					</button>
-					<button
-						onclick={() => switchMode('phecode')}
-						class="mode-btn border-l border-neutral-300"
-						class:active={mode === 'phecode'}
-					>
-						By Phecode
-					</button>
-				</div>
+				<ToggleGroup
+					size="md"
+					options={[
+						{ value: 'pgs', label: 'By Polygenic Score' },
+						{ value: 'phecode', label: 'By Phecode' },
+					]}
+					value={mode}
+					onchange={switchMode}
+				/>
 			</div>
 
 			<SearchCombobox {mode} bind:value={query} {onCommit} />
@@ -87,15 +81,3 @@
 		</div>
 	</div>
 </div>
-
-<style lang="postcss">
-	.mode-btn {
-		@apply px-5 py-2 text-neutral-600 transition-colors duration-150;
-	}
-	.mode-btn:not(.active):hover {
-		@apply bg-neutral-100;
-	}
-	.mode-btn.active {
-		@apply bg-primary-700 text-bg;
-	}
-</style>

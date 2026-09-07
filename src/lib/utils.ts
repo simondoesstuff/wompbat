@@ -20,6 +20,14 @@ export function formatPrevalence(p: number): string {
 	return `${p.toFixed(1)}%`;
 }
 
+export function pgsUrl(id: string): string {
+	return `/pgs?id=${encodeURIComponent(id)}`;
+}
+
+export function phecodeUrl(id: string): string {
+	return `/phecode?id=${encodeURIComponent(id)}`;
+}
+
 // Beasley-Springer-Moro approximation of the inverse normal CDF (max error ~4.5e-4)
 function qnorm(p: number): number {
 	const q = p < 0.5 ? p : 1 - p;

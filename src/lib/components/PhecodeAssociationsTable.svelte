@@ -64,18 +64,3 @@
 		<td class="td-num">{formatPrevalence(row.prevalence)}</td>
 	{/snippet}
 </AssociationsTable>
-
-<style lang="postcss">
-	.th-cell {
-		@apply px-3 py-2 font-semibold;
-	}
-	.th-right {
-		@apply px-3 py-2 font-semibold text-right;
-	}
-	.td-num {
-		@apply px-3 py-2 text-right font-mono text-neutral-700;
-	}
-	.id-link {
-		@apply font-mono font-semibold text-primary-700 hover:underline;
-	}
-</style>

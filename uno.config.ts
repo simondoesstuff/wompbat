@@ -1,23 +1,21 @@
 import { defineConfig, presetWind4, presetIcons, presetWebFonts } from "unocss";
 import presetTheme from "unocss-preset-theme";
+import { SHADE_SCALE } from "./src/lib/theme-scale";
 
 function oklchScale(color: string) {
-  return {
-    50: `oklch(from ${color} 0.95 c h)`,
-    100: `oklch(from ${color} 0.90 c h)`,
-    200: `oklch(from ${color} 0.80 c h)`,
-    300: `oklch(from ${color} 0.70 c h)`,
-    400: `oklch(from ${color} 0.60 c h)`,
-    500: `oklch(from ${color} 0.50 c h)`,
-    600: `oklch(from ${color} 0.40 c h)`,
-    700: `oklch(from ${color} 0.30 c h)`,
-    800: `oklch(from ${color} 0.20 c h)`,
-    900: `oklch(from ${color} 0.10 c h)`,
-    950: `oklch(from ${color} 0.05 c h)`,
-  };
+  return Object.fromEntries(
+    SHADE_SCALE.map(({ label, l }) => [label, `oklch(from ${color} ${l} c h)`])
+  );
 }
 
 export default defineConfig({
+  shortcuts: {
+    'id-link': 'font-mono font-semibold text-primary-700 hover:underline',
+    'section-label': 'text-xs font-semibold uppercase tracking-widest text-neutral-500',
+    'th-cell': 'px-3 py-2 font-semibold',
+    'th-right': 'px-3 py-2 font-semibold text-right',
+    'td-num': 'px-3 py-2 text-right font-mono text-neutral-700',
+  },
   // Classes dynamically assembled at runtime (e.g. Badge variant lookup) won't be
   // scanned by svelte-scoped UnoCSS — list them explicitly so the global sheet includes them.
   safelist: [

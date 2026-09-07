@@ -34,9 +34,3 @@
 		</p>
 	{/snippet}
 </InfoCard>
-
-<style lang="postcss">
-	.id-link {
-		@apply font-mono font-semibold text-primary-700 hover:underline;
-	}
-</style>

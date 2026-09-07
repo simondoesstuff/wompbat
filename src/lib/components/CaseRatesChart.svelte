@@ -91,9 +91,3 @@
 		<div style="height: {plotHeight}px" class="bg-neutral-50 rounded animate-pulse mt-1"></div>
 	{/if}
 </div>
-
-<style lang="postcss">
-	.section-label {
-		@apply text-xs font-semibold uppercase tracking-widest text-neutral-500;
-	}
-</style>

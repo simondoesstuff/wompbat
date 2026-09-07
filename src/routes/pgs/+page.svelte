@@ -10,8 +10,10 @@
 	import PhecodeAssociationsTable from '$lib/components/PhecodeAssociationsTable.svelte';
 	import ForestPlot from '$lib/components/ForestPlot.svelte';
 	import CaseRatesChart from '$lib/components/CaseRatesChart.svelte';
+	import ToggleGroup from '$lib/components/ToggleGroup.svelte';
 	import { searchByPgs } from '$lib/api';
 	import { createPagination } from '$lib/pagination.svelte';
+	import { pgsUrl, phecodeUrl } from '$lib/utils';
 	import type { PgsInfo, PhecodeRow, PgsUnit, AutocompleteItem } from '$lib/types';
 
 	let query = $state('');
@@ -42,7 +44,7 @@
 	}
 
 	function onCommit(item: AutocompleteItem) {
-		goto(`/pgs?id=${encodeURIComponent(item.id)}`, { noScroll: true });
+		goto(pgsUrl(item.id), { noScroll: true });
 	}
 
 	function setUnit(newUnit: PgsUnit) {
@@ -56,7 +58,7 @@
 	}
 
 	function crossLinkPhecode(phecodeId: string) {
-		goto(`/phecode?id=${encodeURIComponent(phecodeId)}`);
+		goto(phecodeUrl(phecodeId));
 	}
 </script>
 
@@ -82,29 +84,15 @@
 			</div>
 
 			<div class="flex items-center gap-2 shrink-0">
-				<span class="text-xs font-semibold uppercase tracking-wider text-neutral-500">PGS Unit</span>
-				<div class="flex rounded-md border border-neutral-300 overflow-hidden text-xs">
-					<button
-						onclick={() => setUnit('continuous')}
-						class="px-3 py-1.5 transition-colors"
-						class:bg-primary-700={unit === 'continuous'}
-						class:text-bg={unit === 'continuous'}
-						class:text-neutral-600={unit !== 'continuous'}
-						class:hover:bg-neutral-50={unit !== 'continuous'}
-					>
-						Continuous
-					</button>
-					<button
-						onclick={() => setUnit('thresholded')}
-						class="px-3 py-1.5 border-l border-neutral-300 transition-colors"
-						class:bg-primary-700={unit === 'thresholded'}
-						class:text-bg={unit === 'thresholded'}
-						class:text-neutral-600={unit !== 'thresholded'}
-						class:hover:bg-neutral-50={unit !== 'thresholded'}
-					>
-						Thresholded
-					</button>
-				</div>
+				<span class="section-label">PGS Unit</span>
+				<ToggleGroup
+					options={[
+						{ value: 'continuous', label: 'Continuous' },
+						{ value: 'thresholded', label: 'Thresholded' },
+					]}
+					value={unit}
+					onchange={setUnit}
+				/>
 			</div>
 		</div>
 
