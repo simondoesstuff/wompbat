@@ -1,3 +1,35 @@
+rule build_precomputed_index:
+	"""Pre-compute top-K FDR-passing results for every PGS and Phecode query.
+
+	K controls rows stored per (query-key, unit) combination;
+	override with --config k=<int> (default 20).
+	Output is temporary — consumed and deleted by split_precomputed_index.
+	"""
+	input:
+		"data/megatable.db"
+	output:
+		temp("data/precomputed.json")
+	params:
+		k=20
+	script:
+		"scripts/build_precomputed_index.py"
+
+
+rule split_precomputed_index:
+	"""Fan out precomputed.json into per-ID files for static serving.
+
+	Produces static/pgs/<id>.json and static/phecode/<id>.json.
+	In CD, run: snakemake static/pgs static/phecode
+	"""
+	input:
+		"data/precomputed.json"
+	output:
+		directory("static/pgs"),
+		directory("static/phecode"),
+	script:
+		"scripts/split_precomputed_index.py"
+
+
 rule decompress_megatable:
 	input:
 		"data/CCPM F3 Megatable Upload.tar.gz"

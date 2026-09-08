@@ -28,9 +28,12 @@ vite.config.ts.timestamp-*
 # Data
 /data/*
 !/data/phecode_definitions1.2.zip
+!/data/precomputed.json.gz
 
 # Generated static assets (produced by prepare / build pipeline)
 /static/sql-wasm-browser.wasm
+/static/pgs/
+/static/phecode/
 
 # Terraform
 terraform.tfstate
