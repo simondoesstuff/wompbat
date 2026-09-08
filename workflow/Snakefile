@@ -4,9 +4,14 @@ rule build_precomputed_index:
 	K controls rows stored per (query-key, unit) combination;
 	override with --config k=<int> (default 20).
 	Output is temporary — consumed and deleted by split_precomputed_index.
+
+	ancient() lets CI supply data/precomputed.json.gz (committed) without
+	data/megatable.db present: snakemake uses epoch-0 for the mtime of ancient
+	inputs, so a freshly-decompressed precomputed.json is always "newer" and
+	this rule is skipped.
 	"""
 	input:
-		"data/megatable.db"
+		ancient("data/megatable.db")
 	output:
 		temp("data/precomputed.json")
 	params:

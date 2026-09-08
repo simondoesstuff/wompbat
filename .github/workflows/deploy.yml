@@ -4,20 +4,51 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
+      - uses: DeterminateSystems/nix-installer-action@v14
 
-      - run: bun install --frozen-lockfile
+      - uses: DeterminateSystems/magic-nix-cache-action@v8
 
-      - run: bun run build
+      - name: Generate static JSON assets
+        run: |
+          nix develop --command bash -euo pipefail -c "
+            gunzip -k data/precomputed.json.gz
+            snakemake static/pgs static/phecode \
+              --snakefile workflow/Snakefile \
+              --cores all
+          "
 
-      - uses: cloudflare/wrangler-action@v3
+      - name: Build app
+        run: |
+          nix develop --command bash -euo pipefail -c "
+            bun install --frozen-lockfile
+            bun run build
+          "
+
+      - uses: actions/upload-pages-artifact@v3
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy .svelte-kit/cloudflare --project-name=phescore
+          path: build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

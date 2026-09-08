@@ -22,7 +22,6 @@
           packages = with pkgs; [
             bun
             just
-            opentofu
             stable.snakemake
           ];
         };

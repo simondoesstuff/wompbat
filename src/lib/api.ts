@@ -3,27 +3,87 @@ import type {
 	PhecodeSearchResult,
 	PgsUnit,
 	AutocompleteItem,
+	PgsInfo,
+	PhecodeInfo,
+	PhecodeRow,
+	PgsRow,
+	AncestryStats,
 } from './types';
+
+type PgsFile = {
+	info: PgsInfo;
+	continuous: PhecodeRow[];
+	thresholded: PhecodeRow[];
+};
+
+type PhecodeFile = {
+	info: PhecodeInfo;
+	rows: PgsRow[];
+	ancestryStats: AncestryStats[];
+};
+
+const pgsFileCache = new Map<string, PgsFile>();
+const phecodeFileCache = new Map<string, PhecodeFile>();
+
+async function fetchPgsFile(pgsId: string): Promise<PgsFile | null> {
+	if (pgsFileCache.has(pgsId)) return pgsFileCache.get(pgsId)!;
+	const res = await fetch(`/pgs/${encodeURIComponent(pgsId)}.json`);
+	if (!res.ok) return null;
+	const data: PgsFile = await res.json();
+	pgsFileCache.set(pgsId, data);
+	return data;
+}
+
+async function fetchPhecodeFile(phecodeId: string): Promise<PhecodeFile | null> {
+	if (phecodeFileCache.has(phecodeId)) return phecodeFileCache.get(phecodeId)!;
+	const res = await fetch(`/phecode/${encodeURIComponent(phecodeId)}.json`);
+	if (!res.ok) return null;
+	const data: PhecodeFile = await res.json();
+	phecodeFileCache.set(phecodeId, data);
+	return data;
+}
 
 export async function searchByPgs(
 	pgsId: string,
 	unit: PgsUnit,
-	offset: number = 0,
+	_offset: number = 0,
 	lowHeterogeneity: boolean = false,
 ): Promise<PgsSearchResult> {
-	const params = new URLSearchParams({ unit, offset: String(offset), lowHeterogeneity: String(lowHeterogeneity) });
-	const res = await fetch(`/api/pgs/${encodeURIComponent(pgsId)}?${params}`);
-	return res.json();
+	const data = await fetchPgsFile(pgsId);
+	if (!data) {
+		return {
+			info: {
+				pgsId,
+				corePhenotype: pgsId,
+				ccpmVariants: 0,
+				catalogUrl: `https://www.pgscatalog.org/score/${pgsId}/`,
+				pubYear: null,
+			},
+			rows: [],
+			hasMore: false,
+		};
+	}
+	let rows = (unit === 'thresholded' ? data.thresholded : data.continuous) ?? [];
+	if (lowHeterogeneity) rows = rows.filter((r) => r.i2 < 40);
+	return { info: data.info, rows, hasMore: false };
 }
 
 export async function searchByPhecode(
 	phecodeId: string,
-	offset: number = 0,
+	_offset: number = 0,
 	lowHeterogeneity: boolean = false,
 ): Promise<PhecodeSearchResult> {
-	const params = new URLSearchParams({ offset: String(offset), lowHeterogeneity: String(lowHeterogeneity) });
-	const res = await fetch(`/api/phecode/${encodeURIComponent(phecodeId)}?${params}`);
-	return res.json();
+	const data = await fetchPhecodeFile(phecodeId);
+	if (!data) {
+		return {
+			info: { phecodeId, phenotypeName: phecodeId, domain: '', totalCases: 0, totalSample: 0 },
+			rows: [],
+			ancestryStats: [],
+			hasMore: false,
+		};
+	}
+	const rows = lowHeterogeneity ? data.rows.filter((r) => r.i2 < 40) : data.rows;
+	return { ...data, rows, hasMore: false };
 }
 
 function matchesPgsId(id: string, q: string): boolean {
