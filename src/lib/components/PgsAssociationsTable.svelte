@@ -59,7 +59,7 @@
 		<td class="td-num">{formatOR(row.metaOR, row.ciLower, row.ciUpper)}</td>
 		<td
 			class="px-3 py-2 text-right font-mono"
-			class:text-failure-400={row.i2 >= 40}
+			class:text-failure-400={row.i2 >= 20}
 		>
 			{formatI2(row.i2)}
 		</td>

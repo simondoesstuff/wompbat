@@ -99,7 +99,7 @@
 					class:translate-x-3={lowHeterogeneity}
 				></span>
 			</span>
-			<span class="text-xs text-neutral-600">Low Heterogeneity (I² &lt; 40%)</span>
+			<span class="text-xs text-neutral-600">Low Heterogeneity (I² &lt; 20%)</span>
 		</label>
 		<div class="flex flex-col items-center gap-0.5">
 			<button

@@ -64,7 +64,7 @@ export async function searchByPgs(
 		};
 	}
 	let rows = (unit === 'thresholded' ? data.thresholded : data.continuous) ?? [];
-	if (lowHeterogeneity) rows = rows.filter((r) => r.i2 < 40);
+	if (lowHeterogeneity) rows = rows.filter((r) => r.i2 < 20);
 	return { info: data.info, rows, hasMore: false };
 }
 
@@ -82,7 +82,7 @@ export async function searchByPhecode(
 			hasMore: false,
 		};
 	}
-	const rows = lowHeterogeneity ? data.rows.filter((r) => r.i2 < 40) : data.rows;
+	const rows = lowHeterogeneity ? data.rows.filter((r) => r.i2 < 20) : data.rows;
 	return { ...data, rows, hasMore: false };
 }
 
