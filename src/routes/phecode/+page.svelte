@@ -10,17 +10,19 @@
 	import PgsAssociationsTable from '$lib/components/PgsAssociationsTable.svelte';
 	import ForestPlot from '$lib/components/ForestPlot.svelte';
 	import CaseRatesChart from '$lib/components/CaseRatesChart.svelte';
+	import ToggleGroup from '$lib/components/ToggleGroup.svelte';
 	import { searchByPhecode } from '$lib/api';
 	import { createPagination } from '$lib/pagination.svelte';
 	import { pgsUrl, phecodeUrl } from '$lib/utils';
-	import type { PhecodeInfo, PgsRow, AncestryStats, AutocompleteItem } from '$lib/types';
+	import type { PhecodeInfo, PgsRow, AncestryStats, AutocompleteItem, PgsUnit } from '$lib/types';
 
 	let query = $state('');
+	let unit = $state<PgsUnit>('continuous');
 	let info = $state<PhecodeInfo | null>(null);
 	let ancestryStats = $state<AncestryStats[]>([]);
 	let selectedRow = $state<PgsRow | null>(null);
 
-	const pag = createPagination((offset, lh) => searchByPhecode(query, offset, lh));
+	const pag = createPagination((offset, lh) => searchByPhecode(query, unit, offset, lh));
 
 	$effect(() => {
 		const id = page.url.searchParams.get('id') ?? '';
@@ -50,6 +52,11 @@
 		goto(phecodeUrl(item.id), { noScroll: true });
 	}
 
+	function setUnit(newUnit: PgsUnit) {
+		unit = newUnit;
+		if (query.trim()) runSearch(query);
+	}
+
 	function onLowHeterogeneityChange(v: boolean) {
 		pag.setLowHeterogeneity(v);
 		if (query.trim() && info) runSearch(query.trim());
@@ -72,7 +79,23 @@
 
 <TwoPanelLayout>
 	{#snippet left()}
-		<SearchCombobox mode="phecode" bind:value={query} {onCommit} />
+		<div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+			<div class="flex-1 w-full">
+				<SearchCombobox mode="phecode" bind:value={query} {onCommit} />
+			</div>
+
+			<div class="flex items-center gap-2 shrink-0">
+				<span class="section-label">PGS Unit</span>
+				<ToggleGroup
+					options={[
+						{ value: 'continuous', label: 'Continuous' },
+						{ value: 'thresholded', label: 'Thresholded' },
+					]}
+					value={unit}
+					onchange={setUnit}
+				/>
+			</div>
+		</div>
 
 		{#if pag.loading}
 			<SearchLoadingSkeleton />

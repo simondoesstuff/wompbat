@@ -20,6 +20,16 @@ rule build_precomputed_index:
 		"scripts/build_precomputed_index.py"
 
 
+rule compress_precomputed_index:
+	"""Compress precomputed.json into the committed cache artifact for CI."""
+	input:
+		"data/precomputed.json"
+	output:
+		"data/precomputed.json.gz"
+	shell:
+		"gzip -k -f {input}"
+
+
 rule split_precomputed_index:
 	"""Fan out precomputed.json into per-ID files for static serving.
 

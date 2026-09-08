@@ -89,9 +89,10 @@ def to_phecode_row(row: dict, unit: str) -> dict:
     }
 
 
-def to_pgs_row(row: dict) -> dict:
-    meta_or = row.get("meta_qPGS_FE_OR") if row.get("meta_qPGS_FE_OR") is not None else 1.0
-    pval = row.get("meta_qPGS_pMix") if row.get("meta_qPGS_pMix") is not None else 1.0
+def to_pgs_row(row: dict, unit: str) -> dict:
+    sfx = "qPGS" if unit == "continuous" else "top10pPGS"
+    meta_or = row.get(f"meta_{sfx}_FE_OR") if row.get(f"meta_{sfx}_FE_OR") is not None else 1.0
+    pval = row.get(f"meta_{sfx}_pMix") if row.get(f"meta_{sfx}_pMix") is not None else 1.0
     ci_lower, ci_upper = derive_ci(meta_or, pval)
     return {
         "pgsId": row["pgs"],
@@ -101,10 +102,10 @@ def to_pgs_row(row: dict) -> dict:
         "ciLower": ci_lower,
         "ciUpper": ci_upper,
         "pValue": pval,
-        "i2": row.get("meta_qPGS_i2") or 0,
-        "auc": row.get("avg_auc_pgs_qPGS") or 0,
+        "i2": row.get(f"meta_{sfx}_i2") or 0,
+        "auc": row.get(f"avg_auc_pgs_{sfx}") or 0,
         "pubYear": row.get("pubyear"),
-        "effects": extract_effects(row, "qPGS"),
+        "effects": extract_effects(row, sfx),
     }
 
 
@@ -167,7 +168,15 @@ for i, phecode_id in enumerate(phecode_ids):
     if i % 500 == 0:
         print(f"  {i}/{len(phecode_ids)}", file=sys.stderr)
 
-    rows = con.execute(
+    info_row = con.execute(
+        """SELECT a.*, d.phenotype FROM associations a
+           LEFT JOIN phecode_defs d ON a.phecode = d.phecode
+           WHERE a.phecode = ? LIMIT 1""",
+        (phecode_id,),
+    ).fetchone()
+    first = dict(info_row) if info_row else {}
+
+    rows_cont = con.execute(
         """SELECT a.*, d.phenotype FROM associations a
            LEFT JOIN phecode_defs d ON a.phecode = d.phecode
            WHERE a.phecode = ? AND a.passFDR10p_qPGS = 1
@@ -175,7 +184,13 @@ for i, phecode_id in enumerate(phecode_ids):
         (phecode_id, K),
     ).fetchall()
 
-    first = dict(rows[0]) if rows else {}
+    rows_thresh = con.execute(
+        """SELECT a.*, d.phenotype FROM associations a
+           LEFT JOIN phecode_defs d ON a.phecode = d.phecode
+           WHERE a.phecode = ? AND a.passFDR10p_bPGS = 1
+           ORDER BY a.meta_top10pPGS_pMix ASC LIMIT ?""",
+        (phecode_id, K),
+    ).fetchall()
 
     phecode_index[phecode_id] = {
         "info": {
@@ -185,7 +200,8 @@ for i, phecode_id in enumerate(phecode_ids):
             "totalCases": first.get("ncase_meta") or 0,
             "totalSample": (first.get("ncase_meta") or 0) + (first.get("ncontrol_meta") or 0),
         },
-        "rows": [to_pgs_row(dict(r)) for r in rows],
+        "continuous": [to_pgs_row(dict(r), "continuous") for r in rows_cont],
+        "thresholded": [to_pgs_row(dict(r), "thresholded") for r in rows_thresh],
         "ancestryStats": extract_stats(first),
     }
 

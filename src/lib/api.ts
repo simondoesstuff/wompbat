@@ -18,7 +18,8 @@ type PgsFile = {
 
 type PhecodeFile = {
 	info: PhecodeInfo;
-	rows: PgsRow[];
+	continuous: PgsRow[];
+	thresholded: PgsRow[];
 	ancestryStats: AncestryStats[];
 };
 
@@ -70,6 +71,7 @@ export async function searchByPgs(
 
 export async function searchByPhecode(
 	phecodeId: string,
+	unit: PgsUnit = 'continuous',
 	_offset: number = 0,
 	lowHeterogeneity: boolean = false,
 ): Promise<PhecodeSearchResult> {
@@ -82,8 +84,9 @@ export async function searchByPhecode(
 			hasMore: false,
 		};
 	}
-	const rows = lowHeterogeneity ? data.rows.filter((r) => r.i2 < 20) : data.rows;
-	return { ...data, rows, hasMore: false };
+	let rows = (unit === 'thresholded' ? data.thresholded : data.continuous) ?? [];
+	if (lowHeterogeneity) rows = rows.filter((r) => r.i2 < 20);
+	return { info: data.info, ancestryStats: data.ancestryStats, rows, hasMore: false };
 }
 
 function matchesPgsId(id: string, q: string): boolean {
