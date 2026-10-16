@@ -2,6 +2,12 @@
 
 SvelteKit app hosted on Cloudflare Pages with a D1 database backend.
 
+## Browser accuracy checks
+
+Run `bun run test:integration` to compare real browser TSV downloads with the
+on-disk SQLite dataset, or set `INTEGRATION_BASE_URL` to test a deployment.
+See [integration test setup and comparison rules](tests/integration/README.md).
+
 ## Prerequisites
 
 - [bun](https://bun.sh)

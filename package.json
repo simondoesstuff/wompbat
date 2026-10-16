@@ -10,11 +10,14 @@
 		"prepare": "svelte-kit sync || echo '' && cp node_modules/sql.js/dist/sql-wasm-browser.wasm static/sql-wasm-browser.wasm",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"test": "bun test tests/"
+		"test": "bun test tests/",
+		"test:integration": "playwright test",
+		"test:integration:report": "playwright show-report data/integration-test-results/report"
 	},
 	"devDependencies": {
 		"@iconify-json/mdi": "^1.2.3",
 		"@iconify-json/solar": "^1.2.5",
+		"@playwright/test": "^1.64.1",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@sveltejs/kit": "^2.63.0",
 		"@sveltejs/vite-plugin-svelte": "^7.1.2",
